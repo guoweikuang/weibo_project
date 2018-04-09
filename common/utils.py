@@ -11,6 +11,7 @@ from functools import wraps
 
 from .redis_client import redis_client
 from .config import WEIBO_LOGIN_COOKIE
+from .logger import logger
 
 
 session = requests.Session()
@@ -65,20 +66,21 @@ def verify_response_status(status_code):
             try:
                 response = f(*args, **kwargs)
                 if response.status_code == status_code:
+                    logger.info(response.status_code)
                     return response
                 else:
                     return None
             except requests.exceptions.ConnectTimeout:
                 # TODO ADD LOG
-                print("connect timeout")
+                logger.error("connect timeout")
                 return None
             except requests.exceptions.Timeout:
                 # TODO ADD LOG
-                print("timeout")
+                logger.error("timeout")
                 return None
             except Exception as e:
                 # TODO ADD LOG
-                print("error, ", e)
+                logger.error("error, %s" % e)
                 return None
         return decorated
     return decorator
