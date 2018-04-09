@@ -35,7 +35,7 @@ def get_agent_from_random():
     return random.choice(USER_AGENT_LIST)
 
 
-def get_headers_from_random():
+def get_login_headers():
     headers = {
         'User-Agent': get_agent_from_random(),
         "Origin": "https://passport.weibo.cn",
@@ -44,17 +44,24 @@ def get_headers_from_random():
     return headers
 
 
-def get_cookies_from_redis():
+def get_common_headers():
+    headers = {
+        'User-Agent': get_agent_from_random(),
+        #"Referer": "https://weibo.cn/gzyhl",
+    }
+    return headers
+
+
+def get_cookies_from_redis(name):
     """get cookies from redis
     """
-    return redis_client().hgetall(WEIBO_LOGIN_COOKIE)
+    return redis_client().hgetall(WEIBO_LOGIN_COOKIE % name)
 
 
 def verify_response_status(status_code):
-    @wraps(f)
     def decorator(f):
+        @wraps(f)
         def decorated(*args, **kwargs):
-            response = None
             try:
                 response = f(*args, **kwargs)
                 if response.status_code == status_code:
@@ -64,12 +71,14 @@ def verify_response_status(status_code):
             except requests.exceptions.ConnectTimeout:
                 # TODO ADD LOG
                 print("connect timeout")
+                return None
             except requests.exceptions.Timeout:
                 # TODO ADD LOG
                 print("timeout")
+                return None
             except Exception as e:
                 # TODO ADD LOG
                 print("error, ", e)
-            return response
+                return None
         return decorated
     return decorator

@@ -6,6 +6,7 @@ redis client module
 @author guoweikuang
 """
 import redis
+from .config import WEIBO_LOGIN_COOKIE
 
 
 class Client(object):
@@ -33,7 +34,39 @@ def redis_client(host="localhost", port=6379, db=0):
     return client
 
 
+class Cache(object):
+    def __init__(self, name=WEIBO_LOGIN_COOKIE):
+        self.name = name
+        self.client = redis_client()
 
+    def is_cookie_in_cache(self):
+        """check if cookies exists in the cache
 
+        :param name: cookie key name
+        :return: True or False
+        """
+        if self.client.hkeys(self.name):
+            return True
+        else:
+            return False
 
+    def remove_cookie_from_cache(self, name=None):
+        """remove if cookies exists in the cache
 
+        :param name: cookie key name
+        :return: None
+        """
+        if self.client.hkeys(self.name):
+            keys = self.client.hkeys(self.name)
+            self.client.hdel(self.name, keys)
+
+    def save_cookie_to_cache(self, values=None):
+        """saving cookie to cache
+
+        :param values:
+        :return: None
+        """
+        if self.client.hkeys(self.name):
+            self.remove_cookie_from_cache()
+        else:
+            self.client.hmset(self.name, values)

@@ -7,8 +7,9 @@ weibo login module
 """
 import requests
 from common.utils import session
-from common.utils import get_headers_from_random
+from common.utils import get_login_headers
 from common.redis_client import redis_client
+from common.redis_client import Cache
 from common.config import WEIBO_LOGIN_COOKIE
 
 
@@ -20,6 +21,7 @@ class Login(object):
         self.username = username
         self.password = password
         self.client = redis_client()
+        self.cache = Cache(WEIBO_LOGIN_COOKIE % username)
 
     def login(self):
         """login method"""
@@ -27,7 +29,9 @@ class Login(object):
             response = session.post(self.login_url, data=self.parser_data,
                                     headers=self.parser_header, timeout=5)
             if response.status_code == 200:
-                self.client.hmset(WEIBO_LOGIN_COOKIE % self.username, session.cookies.get_dict())
+                if self.cache.is_cookie_in_cache():
+                    self.cache.remove_cookie_from_cache()
+                self.cache.save_cookie_to_cache(session.cookies.get_dict())
         except requests.exceptions.ConnectTimeout:
             # TODO add log
             print('connect timeout')
@@ -51,5 +55,5 @@ class Login(object):
 
     @property
     def parser_header(self):
-        return get_headers_from_random()
+        return get_login_headers()
 
