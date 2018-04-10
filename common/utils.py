@@ -5,12 +5,22 @@ need to handle somee
 
 @author guoweikuang
 """
-import random
+import re
+import arrow
 import requests
+import random
 from functools import wraps
 
 from .redis_client import redis_client
 from .config import WEIBO_LOGIN_COOKIE
+from .const import DATE_MODE
+from .const import DATE_PATTERN
+from .const import DATETIME_PATTERN
+from .const import TODAY_TIME
+from .const import TODAY_PATTERN
+from .const import MINUTES_BEFORE
+from .const import MINUTES_PATTERN
+from .const import URL_PATTERN
 from .logger import logger
 
 
@@ -84,3 +94,48 @@ def verify_response_status(status_code):
                 return None
         return decorated
     return decorator
+
+
+def filter_time(time_str):
+    """ 提取时间
+
+    :param time_str: time string
+    :return: timestamp
+    """
+    utc = arrow.utcnow()
+    if DATE_MODE in time_str:
+        pattern = re.compile(DATE_PATTERN)
+        result = re.search(pattern, time_str)
+        month, day, hour, minute = map(int, result.groups())
+        convert_time = utc.replace(month=month, day=day, hour=hour, minute=minute)
+
+    elif MINUTES_BEFORE in time_str:
+        pattern = re.compile(MINUTES_PATTERN)
+        result = re.search(pattern, time_str)
+        minute = int(result.group(1))
+        convert_time = utc.replace(minute=minute)
+
+    elif TODAY_TIME in time_str:
+        pattern = re.compile(TODAY_PATTERN)
+        result = re.search(pattern, time_str)
+        hour, minute = map(int, result.groups())
+        convert_time = utc.replace(hour=hour, minute=minute)
+
+    else:
+        pattern = re.compile(DATETIME_PATTERN)
+        result = re.search(pattern, time_str)
+        date = result.group(1)
+        convert_time = arrow.get(date)
+
+    return convert_time.datetime
+
+
+def filter_url_mark(url):
+    """提取url标识做为布隆过滤判断
+
+    :param url:
+    :return:
+    """
+    pattern = re.compile(URL_PATTERN)
+    mark = re.search(pattern, url)
+    return mark.group(1)
