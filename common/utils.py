@@ -66,8 +66,9 @@ def get_common_headers():
 def get_cookies_from_redis(name):
     """get cookies from redis
     """
-    return redis_client().hgetall(WEIBO_LOGIN_COOKIE % name)
-
+    cookies = redis_client().hgetall(WEIBO_LOGIN_COOKIE % name)
+    cookies = {key.decode('utf-8'): value.decode('utf-8') for key, value in cookies.items()}
+    return cookies
 
 def verify_response_status(status_code):
     def decorator(f):

@@ -6,10 +6,10 @@ crawl weibo content
 @author guoweikuang
 """
 import re
-# import grequests
 from bs4 import BeautifulSoup
 
 from common.session_client import session_client
+from common.session_client import async_session_client
 from common.utils import verify_response_status
 from common.redis_client import Cache
 from common.utils import filter_time
@@ -18,16 +18,16 @@ from common.mysql_client import MysqlClient
 
 class Spider(object):
     """crawl module"""
-    def __init__(self, base_url, name):
+    def __init__(self, base_url, name, async=False):
         self.base_url = base_url
         self.name = name
-        self.session = session_client(name=name)
+        self.session = session_client(name=name) if not async else async_session_client(name=name)
 
     @verify_response_status(200)
     def get_response(self, page=1):
         url = self.base_url + "?page={}".format(page)
         response = self.session.get(url)
-        print(response.text)
+        #print(response.text)
         return response
 
 
