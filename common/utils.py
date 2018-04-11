@@ -22,6 +22,7 @@ from .const import MINUTES_BEFORE
 from .const import MINUTES_PATTERN
 from .const import URL_PATTERN
 from .logger import logger
+from .config import get_jieba_dict_path
 
 
 session = requests.Session()
@@ -69,6 +70,7 @@ def get_cookies_from_redis(name):
     cookies = redis_client().hgetall(WEIBO_LOGIN_COOKIE % name)
     cookies = {key.decode('utf-8'): value.decode('utf-8') for key, value in cookies.items()}
     return cookies
+
 
 def verify_response_status(status_code):
     def decorator(f):
@@ -140,3 +142,17 @@ def filter_url_mark(url):
     pattern = re.compile(URL_PATTERN)
     mark = re.search(pattern, url)
     return mark.group(1)
+
+
+def load_stop_words():
+    """加载停用词表
+
+    :return:
+    """
+    stop_words = set()
+    stop_words_path = get_jieba_dict_path("user_stop_dict.txt")
+
+    with open(stop_words_path, 'rb') as fp:
+        for line in fp.readlines():
+            stop_words.add(line.encode('utf-8').strip('\n'))
+    return stop_words

@@ -17,5 +17,9 @@ if __name__ == '__main__':
     # app = Parser(response.text)
     # app.extract_text()
 
-    responses = async_crawl_weibo(pages=5)
+    responses = async_crawl_weibo(start_page=101, end_page=130)
+    apps = [Parser(response.text) for response in responses]
+    for app in apps:
+        app.extract_text()
+    apps[0].close_client()
     print(responses)

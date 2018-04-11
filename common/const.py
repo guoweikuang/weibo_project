@@ -5,7 +5,7 @@ handle time
 
 @author guoweikuang
 """
-
+import re
 
 # XXX分钟前 形式
 MINUTES_BEFORE = "分钟前"
@@ -27,3 +27,11 @@ DATETIME_PATTERN = "(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})"
 URL_PATTERN = r"comment\/(\w+)\?uid"
 
 
+# 表情
+EMOJI_PATTERN = re.compile(
+    u"(\ud83d[\ude00-\ude4f])|"  # emoticons
+    u"(\ud83c[\udf00-\uffff])|"  # symbols & pictographs (1 of 2)
+    u"(\ud83d[\u0000-\uddff])|"  # symbols & pictographs (2 of 2)
+    u"(\ud83d[\ude80-\udeff])|"  # transport & map symbols
+    u"(\ud83c[\udde0-\uddff])"  # flags (iOS)
+    "+", flags=re.UNICODE)

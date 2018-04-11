@@ -22,7 +22,7 @@ class Client(object):
         return cls._instance
 
 
-class MysqlClient(object):
+class MysqlClient(Client):
     def __init__(self, pool_num=5):
         self.pool_num = pool_num
         self.config = Config()
@@ -60,7 +60,7 @@ class MysqlClient(object):
             sql = "INSERT INTO content(title, pub_time, comment_num, like_num, url) VALUES(%s, %s, %s, %s, %s);"
             if is_repeat(url):
                 return
-            self.cur.execute(sql, (title, str(pub_time), str(comment_num), str(like_num), url))
+            self.cur.execute(sql, (title.strip(), str(pub_time), str(comment_num), str(like_num), url))
             self.conn.commit()
 
         except Exception as e:

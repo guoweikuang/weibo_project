@@ -13,6 +13,7 @@ from common.session_client import async_session_client
 from common.utils import verify_response_status
 from common.redis_client import Cache
 from common.utils import filter_time
+from common.const import EMOJI_PATTERN
 from common.mysql_client import MysqlClient
 
 
@@ -54,7 +55,7 @@ class Parser(object):
             if comment_num > 0:
                 # 标题
                 title = items.find('span', class_="ctt").get_text()
-                title = title.replace('http://t.cn/Roeb5AN', '').replace("—发布端：", "").strip()
+                title = self.extract_title(title)
                 # 点赞数
                 like = str(total[3])
                 like = re.findall(r'\[(\d+)\]', like)
@@ -71,3 +72,15 @@ class Parser(object):
                 self.result.append((title, comment_num, like_num, url))
                 self.client.save_data_to_mysql(title, pub_time, comment_num, like_num, url)
 
+    def extract_title(self, title):
+        """过滤内容中的特殊字符和表情
+
+        :param title:
+        :return:
+        """
+        title = title.replace('http://t.cn/Roeb5AN', '').replace("—发布端：", "").strip()
+        try:
+            result = re.compile(u'[\U00010000-\U0010ffff]')
+        except re.error:
+            result = re.compile(u'[\uD800-\uDBFF][\uDC00-\uDFFF]')
+        return result.sub(r"", title)
