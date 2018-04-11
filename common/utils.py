@@ -154,5 +154,15 @@ def load_stop_words():
 
     with open(stop_words_path, 'rb') as fp:
         for line in fp.readlines():
-            stop_words.add(line.encode('utf-8').strip('\n'))
+            stop_words.add(line.decode('utf-8').strip('\n'))
     return stop_words
+
+
+def filter_title(title):
+    """过滤文本中特殊字符
+
+    :param title:
+    :return:
+    """
+    title = title.replace("   \u200b\u200b\u200b", '').replace(" ", '').strip()
+    return title

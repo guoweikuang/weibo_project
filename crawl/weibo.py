@@ -78,7 +78,8 @@ class Parser(object):
         :param title:
         :return:
         """
-        title = title.replace('http://t.cn/Roeb5AN', '').replace("—发布端：", "").strip()
+        title = title.replace('http://t.cn/Roeb5AN', '').replace("—发布端：", "").\
+            replace("\u200b\u200b\u200b", "").strip()
         try:
             result = re.compile(u'[\U00010000-\U0010ffff]')
         except re.error:

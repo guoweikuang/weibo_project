@@ -15,7 +15,6 @@ from .bloom_filter import is_repeat
 
 
 class Client(object):
-
     def __new__(cls, *args, **kwargs):
         if not hasattr(cls, "_instance"):
             cls._instance = super(Client, cls).__new__(cls, *args, **kwargs)
@@ -70,3 +69,33 @@ class MysqlClient(Client):
     def close_mysql(self):
         self.conn.close()
         self.cur.close()
+
+
+def get_mysql_client():
+    client = MysqlClient()
+    return client
+
+
+def get_text_from_mysql(database_name, start_time, end_time):
+    """获取指定时间段数据
+
+    :param database_name: 数据库名称
+    :param start_time: 开始时间
+    :param end_time: 结束时间
+    :return:
+    """
+    client = get_mysql_client()
+    rows = []
+    sql = "SELECT title, pub_time, comment_num, like_num FROM %s WHERE pub_time BETWEEN '%s' AND '%s'"
+    sql = sql % (database_name, start_time, end_time)
+    print(sql)
+    try:
+        client.cur.execute(sql)
+        #client.cur.execute(sql, (database_name, start_time, end_time))
+        rows = client.cur.fetchall()
+
+    except Exception as e:
+        logger.error("mysql select error: %s", e)
+        client.close_mysql()
+
+    return rows
