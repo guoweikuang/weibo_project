@@ -21,6 +21,7 @@ from .const import TODAY_PATTERN
 from .const import MINUTES_BEFORE
 from .const import MINUTES_PATTERN
 from .const import URL_PATTERN
+from .const import NUMBER_PATTERN
 from .logger import logger
 from .config import get_jieba_dict_path
 
@@ -164,5 +165,6 @@ def filter_title(title):
     :param title:
     :return:
     """
+    title = re.sub(NUMBER_PATTERN, "", title)
     title = title.replace("   \u200b\u200b\u200b", '').replace(" ", '').strip()
     return title

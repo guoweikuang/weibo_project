@@ -7,6 +7,8 @@ from handle_text.tf_idf import TFIDF
 from common.mysql_client import get_text_from_mysql
 import arrow
 from pprint import pprint
+from handle_text.build_vsm import BuildVSM
+
 
 if __name__ == '__main__':
     #login_url = "https://passport.weibo.cn/sso/login"
@@ -31,5 +33,10 @@ if __name__ == '__main__':
     rows = get_text_from_mysql("content", start_time=start, end_time=now)
     tf_idf = TFIDF(rows)
     tf_idf_dict = tf_idf.tf_idf()
-    pprint(sorted(tf_idf_dict.items(), key=lambda d:d[1], reverse=True))
+    #tf_idf.tf()
+    #tf_idf.use_scikit_learn_tf_idf()
+    vsm = BuildVSM(tf_idf_dict, tf_idf.seg_list, vsm_name="total")
+    vsm.build_vsm()
+    #tf_idf_dict = tf_idf.tf_idf()
+    #pprint(sorted(tf_idf_dict.items(), key=lambda d:d[1], reverse=True))
     # pprint(rows)

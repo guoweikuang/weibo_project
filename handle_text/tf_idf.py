@@ -13,7 +13,7 @@ from collections import Counter
 from common.config import get_jieba_dict_path
 from common.utils import load_stop_words
 from common.utils import filter_title
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 
 
 jieba.load_userdict(get_jieba_dict_path("user_dict.txt"))
@@ -72,11 +72,27 @@ class TFIDF(object):
         :return:
         """
         self.tf()
-        print(self.counter)
         words_num = len(self.tf_dict)
         for word, value in self.tf_dict.items():
             self.tf_idf_dict[word] = float(value * float(math.log(words_num / value + 1)))
 
         return self.tf_idf_dict
+
+    def use_scikit_learn_tf_idf(self):
+        """
+        使用scikit-learn 库
+        :return:
+        """
+        print(self.seg_list)
+        seg_list = [' '.join(seg) for seg in self.seg_list]
+        vectorizer = CountVectorizer()
+        X = vectorizer.fit_transform(seg_list)
+        transformer = TfidfTransformer()
+        tfidf = transformer.fit_transform(X)
+        weight = tfidf.toarray()
+        print(weight)
+        word = vectorizer.get_feature_names()
+        print(word)
+        print(X.toarray())
 
 

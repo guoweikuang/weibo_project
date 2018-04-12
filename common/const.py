@@ -35,3 +35,7 @@ EMOJI_PATTERN = re.compile(
     u"(\ud83d[\ude80-\udeff])|"  # transport & map symbols
     u"(\ud83c[\udde0-\uddff])"  # flags (iOS)
     "+", flags=re.UNICODE)
+
+
+# 过滤电话号码
+NUMBER_PATTERN = re.compile(r"\d{11}")

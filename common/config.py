@@ -5,6 +5,8 @@ import os
 WEIBO_LOGIN_KEY = "weibo:username:%s"
 WEIBO_LOGIN_COOKIE = "weibo:username:%s:cookie"
 
+VSM_NAME = "vsm:name:%s"
+
 
 class Config(object):
     """数据库连接配置"""
