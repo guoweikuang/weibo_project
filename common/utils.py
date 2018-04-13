@@ -5,15 +5,18 @@ need to handle somee
 
 @author guoweikuang
 """
+import os
 import re
 import arrow
 import requests
 import random
+import shutil
 from functools import wraps
 
 from .redis_client import redis_client
 from .config import WEIBO_LOGIN_COOKIE
 from .config import VSM_NAME
+from .config import CLUSTER_RESULT
 from .const import DATE_MODE
 from .const import DATE_PATTERN
 from .const import DATETIME_PATTERN
@@ -25,6 +28,7 @@ from .const import URL_PATTERN
 from .const import NUMBER_PATTERN
 from .logger import logger
 from .config import get_jieba_dict_path
+from .config import abs_path
 
 
 session = requests.Session()
@@ -132,7 +136,7 @@ def filter_time(time_str):
         date = result.group(1)
         convert_time = arrow.get(date)
 
-    return convert_time.datetime
+    return convert_time.format("YYYY-MM-DD HH:mm:ss")
 
 
 def filter_url_mark(url):
@@ -186,3 +190,32 @@ def load_data_set(vsm_name):
         #data = map(float, data.decode('utf-8').split(' '))
         data_set.append(data)
     return data_set
+
+
+def classify_k_cluster_to_redis(labels, texts, filename="cluster_result"):
+    """ 对k-means 聚类后结果写入redis 或写入文本
+
+    :param labels: 所有文本的label, 分类标志
+    :param texts: 所有文本
+    :return:
+    """
+    # file_path = os.path.join(abs_path, filename)
+    #
+    # if os.path.exists(file_path):
+    #     shutil.rmtree(file_path, True)
+
+    label_type = set(labels)
+    client = redis_client()
+
+    for label in label_type:
+        key_name = CLUSTER_RESULT % str(label+1)
+        if client.llen(key_name):
+            client.delete(key_name)
+
+    for label, rows in zip(labels, texts):
+        key_name = CLUSTER_RESULT % str(label+1)
+        title, pub_time, comment_num, like_num = rows
+        text = title + '\t' + comment_num + '\t' + like_num + '\t' + pub_time
+        client.lpush(key_name, text)
+
+

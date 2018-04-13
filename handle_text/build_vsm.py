@@ -5,7 +5,6 @@ text vector
 
 @author guoweikuang
 """
-import arrow
 from common.redis_client import redis_client
 from common.config import VSM_NAME
 from common.logger import logger
@@ -65,10 +64,11 @@ def run_build_vsm(start_time, end_time):
     :param end_time:  datetime类型, 结束时间
     :return:
     """
-    now = arrow.utcnow().date()
-    start = arrow.utcnow().shift(days=-2).date()
-    rows = get_text_from_mysql("content", start_time=start, end_time=now)
+    rows = get_text_from_mysql("content", start_time=start_time, end_time=end_time)
+    from pprint import pprint
+    pprint(rows)
     tf_idf = TFIDF(rows)
     tf_idf_dict = tf_idf.tf_idf()
     vsm = BuildVSM(tf_idf_dict, tf_idf.seg_list, vsm_name="total")
     vsm.build_vsm()
+    return rows

@@ -70,3 +70,14 @@ class Cache(object):
             self.remove_cookie_from_cache()
         else:
             self.client.hmset(self.name, values)
+
+
+def classify_k_cluster(labels, texts):
+    """ 对k-means 聚类后结果写入redis 或写入文本
+
+    :param labels: 所有文本的label, 分类标志
+    :param texts: 所有文本
+    :return:
+    """
+
+

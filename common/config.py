@@ -5,7 +5,11 @@ import os
 WEIBO_LOGIN_KEY = "weibo:username:%s"
 WEIBO_LOGIN_COOKIE = "weibo:username:%s:cookie"
 
+# 向量空间 键名
 VSM_NAME = "vsm:name:%s"
+
+# 聚类结果存入redis 键名
+CLUSTER_RESULT = "cluster:%s:text"
 
 
 class Config(object):
