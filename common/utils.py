@@ -13,6 +13,7 @@ from functools import wraps
 
 from .redis_client import redis_client
 from .config import WEIBO_LOGIN_COOKIE
+from .config import VSM_NAME
 from .const import DATE_MODE
 from .const import DATE_PATTERN
 from .const import DATETIME_PATTERN
@@ -168,3 +169,20 @@ def filter_title(title):
     title = re.sub(NUMBER_PATTERN, "", title)
     title = title.replace("   \u200b\u200b\u200b", '').replace(" ", '').strip()
     return title
+
+
+def load_data_set(vsm_name):
+    """ load dataset from redis
+
+    :param vsm_name: vsm name
+    :return:
+    """
+    client = redis_client()
+
+    datas = client.lrange(VSM_NAME % vsm_name, 0, -1)
+    data_set = []
+    for data in datas:
+        data = [float(i) for i in data.decode('utf-8').strip().split(" ")]
+        #data = map(float, data.decode('utf-8').split(' '))
+        data_set.append(data)
+    return data_set

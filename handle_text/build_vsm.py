@@ -5,8 +5,12 @@ text vector
 
 @author guoweikuang
 """
+import arrow
 from common.redis_client import redis_client
 from common.config import VSM_NAME
+from common.logger import logger
+from common.mysql_client import get_text_from_mysql
+from .tf_idf import TFIDF
 
 
 class BuildVSM(object):
@@ -32,7 +36,7 @@ class BuildVSM(object):
             tf_idf_list = sorted(self.tf_idf.items(), key=lambda d: d[1], reverse=True)[:30]
         else:
             tf_idf_list = sorted(self.tf_idf.items(), key=lambda d: d[1], reverse=True)[:30]
-
+        logger.info(tf_idf_list)
         keywords = [word for word, _ in tf_idf_list]
         keywords_length = len(keywords)
         self.remove_vsm_when_exists()
@@ -47,9 +51,24 @@ class BuildVSM(object):
                 continue
             score = map(str, score)
             score_str = ' '.join(score)
-            #print(score_str)
             self.redis_client.lpush(self.vsm_name, score_str)
 
     def remove_vsm_when_exists(self):
         if self.redis_client.llen(self.vsm_name):
             self.redis_client.ltrim(self.vsm_name, -1, 0)
+
+
+def run_build_vsm(start_time, end_time):
+    """
+    构建向量空间模型
+    :param start_time: datetime类型, 开始时间
+    :param end_time:  datetime类型, 结束时间
+    :return:
+    """
+    now = arrow.utcnow().date()
+    start = arrow.utcnow().shift(days=-2).date()
+    rows = get_text_from_mysql("content", start_time=start, end_time=now)
+    tf_idf = TFIDF(rows)
+    tf_idf_dict = tf_idf.tf_idf()
+    vsm = BuildVSM(tf_idf_dict, tf_idf.seg_list, vsm_name="total")
+    vsm.build_vsm()

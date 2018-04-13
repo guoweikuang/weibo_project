@@ -88,7 +88,6 @@ def get_text_from_mysql(database_name, start_time, end_time):
     rows = []
     sql = "SELECT title, pub_time, comment_num, like_num FROM %s WHERE pub_time BETWEEN '%s' AND '%s'"
     sql = sql % (database_name, start_time, end_time)
-    print(sql)
     try:
         client.cur.execute(sql)
         #client.cur.execute(sql, (database_name, start_time, end_time))

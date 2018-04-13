@@ -94,5 +94,3 @@ class TFIDF(object):
         word = vectorizer.get_feature_names()
         print(word)
         print(X.toarray())
-
-
