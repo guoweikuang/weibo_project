@@ -16,7 +16,7 @@ from common.utils import classify_k_cluster_to_redis
 
 
 if __name__ == '__main__':
-    run_async_crawl(81, 100)
+    run_async_crawl(1, 20)
     #now = arrow.utcnow().date()
     #start = arrow.utcnow().shift(days=-10).date()
     #rows = run_build_vsm(start_time=start, end_time=now)
