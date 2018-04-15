@@ -7,6 +7,8 @@ models module
 """
 from . import db
 from . import login_manager
+
+from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -17,7 +19,7 @@ class Role(db.Model):
     users = db.relationship("User", backref="role", lazy="dynamic")
 
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True)
@@ -30,7 +32,7 @@ class User(db.Model):
         """ set password is can't read """
         raise AttributeError("password is forbid to read!")
 
-    @property.setter
+    @password.setter
     def password(self, password):
         """ using werkzeug product password hash
 
@@ -50,4 +52,4 @@ class User(db.Model):
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(id=int(user_id))
+    return User.query.get(int(user_id))

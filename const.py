@@ -6,4 +6,4 @@ const module
 @author guoweikuang
 """
 
-MYSQL_URL = "mysql://{username}:{password}@localhost/flask_weibo"
+MYSQL_URL = "mysql+pymysql://root:2014081029@localhost:3306/flask_weibo?charset=utf8mb4"

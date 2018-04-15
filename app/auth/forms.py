@@ -19,7 +19,7 @@ class LoginForm(Form):
     """
     login form to weibo
     """
-    email = StringField("Email", validators=[DataRequired(), Length(1, 64)])
-    password = PasswordField("Password", validators=[DataRequired(), Email()])
+    email = StringField("Email", validators=[DataRequired(), Length(1, 64), Email()])
+    password = PasswordField("Password", validators=[DataRequired()])
     remember_me = BooleanField("remember_me")
     submit = SubmitField("Submit")

@@ -25,11 +25,13 @@ class Config(object):
     MAIL_USERNAME = '15602200534@163.com'
     MAIL_PASSWORD = ''
     BABEL_DEFAULT_LOCALE = 'zh_CN'
-    USERNAME = os.environ.get("USERNAME") or ""
-    PASSWORD = os.environ.get("PASSWORD") or ""
+    USERNAME = os.environ.get("WEIBO_USERNAME") or "root"
+    PASSWORD = os.environ.get("WEIBO_PASSWORD") or "2014081029"
+    MYSQL_URL = MYSQL_URL.format(username=USERNAME, password=PASSWORD)
+    print(MYSQL_URL)
+    #CELERY_BROKER_URL = 'redis://localhost:6379',
+    # CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 
-    CELERY_BROKER_URL = 'redis://localhost:6379',
-    CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 
     def init_app(app):
         pass
@@ -38,7 +40,9 @@ class Config(object):
 class DevelopmentConfig(Config):
     """ development config """
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = MYSQL_URL % (self.USERNAME, self.PASSWORD) or os.environ.get("DEV_DATAABSE_URI")
+    print(os.environ.get("DEV_DATABASE_URI"))
+    print(MYSQL_URL)
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DEV_DATABASE_URI") or MYSQL_URL
 
 
 class TestingConfig(Config):
@@ -46,7 +50,7 @@ class TestingConfig(Config):
     need to set debug to True
     """
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = MYSQL_URL % (self.USERNAME, self.PASSWORD) or os.environ.get("TEST_DATABASE_URI")
+    SQLALCHEMY_DATABASE_URI = os.environ.get("TEST_DATABASE_URI") or MYSQL_URL
 
 
 class ProductionConfig(Config):
@@ -54,13 +58,13 @@ class ProductionConfig(Config):
     need to set debug to False.
 
     """
-    DEBUG = Flase
-    SQLALCHEMY_DATABASE_URI = MYSQL_URL % (self.USERNAME, self.PASSWORD) or os.environ.get("PRO_DATABASE_URI")
+    DEBUG = False
+    SQLALCHEMY_DATABASE_URI = os.environ.get("PRO_DATABASE_URI") or MYSQL_URL
 
 
 config = {
     'development': DevelopmentConfig,
     'testing': TestingConfig,
     'production': ProductionConfig,
-    'default': DevelopmentConfig,
+    'default': DevelopmentConfig,  # default to using development config
 }

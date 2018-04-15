@@ -8,11 +8,14 @@ init flask extensions and flask instance
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_bootstrap import Bootstrap
 from config import config
+from crawl.crawl import run_async_crawl
 
 
 db = SQLAlchemy()
 login_manager = LoginManager()
+bootstrap = Bootstrap()
 
 
 def create_app(config_name):
@@ -27,6 +30,8 @@ def create_app(config_name):
 
     db.init_app(app)
     login_manager.init_app(app)
+    bootstrap.init_app(app)
+
 
     # register weibo buleprint to app instance
     from .weibo import weibo
@@ -34,5 +39,5 @@ def create_app(config_name):
 
     # register auth blueprint to app instances
     from .auth import auth
-    app.register_blueprint(auth)
+    app.register_blueprint(auth, url_prefix='/auth')
     return app
