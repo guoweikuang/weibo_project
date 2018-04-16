@@ -26,5 +26,15 @@ class CrawlForm(FlaskForm):
 
     start_page = IntegerField("起始页数", validators=[DataRequired()])
     end_page = IntegerField("终止页数", validators=[DataRequired()])
-    submit = SubmitField("提交")
+    submit = SubmitField("点击爬取")
 
+
+class AnalyzeForm(FlaskForm):
+    """ weibo analyse module form.
+
+    """
+    start_time = DateField("起始日期", validators=[DataRequired()], format="%Y-%m-%d")
+    end_time = DateField("起始日期", validators=[DataRequired()], format="%Y-%m-%d")
+    k_cluster = IntegerField("设置簇心数", validators=[DataRequired(
+                                                    message="请输入聚类的k值（就是聚成几类)")])
+    submit = SubmitField("开始分析")

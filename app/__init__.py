@@ -11,6 +11,7 @@ from flask_login import LoginManager
 from flask_bootstrap import Bootstrap
 from config import config
 from crawl.crawl import run_async_crawl
+from handle_text.build_vsm import run_build_vsm
 
 
 db = SQLAlchemy()

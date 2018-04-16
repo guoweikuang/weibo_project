@@ -24,3 +24,14 @@ def run_async_crawl(start_page=1, end_page=5):
     for app in apps:
         app.extract_text()
     apps[0].close_client()
+
+
+def run_async_crawl_by_day(start_time, days=5):
+    """ crawl weibo data by days
+
+    :param start_time: start date
+    :param days: days to crawl
+    :return: 貌似这个没有什么意义
+    """
+    pass
+
