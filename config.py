@@ -28,7 +28,6 @@ class Config(object):
     USERNAME = os.environ.get("WEIBO_USERNAME") or "root"
     PASSWORD = os.environ.get("WEIBO_PASSWORD") or "2014081029"
     MYSQL_URL = MYSQL_URL.format(username=USERNAME, password=PASSWORD)
-    print(MYSQL_URL)
     #CELERY_BROKER_URL = 'redis://localhost:6379',
     # CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 
@@ -40,8 +39,6 @@ class Config(object):
 class DevelopmentConfig(Config):
     """ development config """
     DEBUG = True
-    print(os.environ.get("DEV_DATABASE_URI"))
-    print(MYSQL_URL)
     SQLALCHEMY_DATABASE_URI = os.environ.get("DEV_DATABASE_URI") or MYSQL_URL
 
 

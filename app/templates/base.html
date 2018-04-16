@@ -6,6 +6,14 @@
 {% block head %}
     {{ super() }}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-table/dist/bootstrap-table.min.css') }}">
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="{{ url_for('static', filename='bootstrap-table/dist/bootstrap-table.min.js') }}"></script>
+
+    <!-- Latest compiled and minified Locales -->
+    <script src="{{ url_for('static', filename='bootstrap-table/dist/locale/bootstrap-table-zh-CN.min.js') }}"></script>
 {% endblock %}
 
 
@@ -23,11 +31,7 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-{#                <li><a href="#">Home</a></li>#}
-                {% if current_user.is_authenticated %}
-                <li><a href="#">个人主页</a></li>
-                {% endif %}
-                <li><a href="#">数据挖掘</a></li>
+                <li><a href="{{ url_for('weibo.crawl') }}">数据挖掘</a></li>
                 <li><a href="#">数据图表展示</a></li>
                 <li><a href="#">舆情类别</a></li>
                 <li><a href="#">热点话题发现</a></li>
@@ -65,3 +69,4 @@
     {% endblock %}
 </div>
 {% endblock %}
+

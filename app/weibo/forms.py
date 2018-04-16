@@ -23,7 +23,7 @@ class CrawlForm(FlaskForm):
     # 输入框必须为"年-月-日"格式
     #start_time = DateField("起始日期", validators=[DataRequired()], format="%Y-%m-%d")
     #end_time = DateField("终止日期", validators=[DataRequired()], format="%Y-%m-%d")
-
+    crawl_url = StringField("爬取链接", validators=[DataRequired()])
     start_page = IntegerField("起始页数", validators=[DataRequired()])
     end_page = IntegerField("终止页数", validators=[DataRequired()])
     submit = SubmitField("点击爬取")

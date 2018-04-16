@@ -6,7 +6,7 @@ TF-IDF module
 @author guoweikuang
 """
 import math
-import jieba
+#import jieba
 
 from collections import Counter
 
@@ -14,9 +14,9 @@ from common.config import get_jieba_dict_path
 from common.utils import load_stop_words
 from common.utils import filter_title
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+from . import jieba
 
-
-jieba.load_userdict(get_jieba_dict_path("user_dict.txt"))
+#jieba.load_userdict(get_jieba_dict_path("user_dict.txt"))
 
 
 class TFIDF(object):
