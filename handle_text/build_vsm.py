@@ -10,10 +10,11 @@ from common.config import VSM_NAME
 from common.logger import logger
 from common.mysql_client import get_text_from_mysql
 from .tf_idf import TFIDF
+from .utils import set_vsm_to_file
 
 
 class BuildVSM(object):
-    def __init__(self, tf_idf_dict, seg_list, vsm_name="total"):
+    def __init__(self, tf_idf_dict, seg_list, rows, vsm_name="total"):
         """
 
         :param tf_idf_dict: 关键词权重表
@@ -22,6 +23,9 @@ class BuildVSM(object):
         self.tf_idf = tf_idf_dict
         self.seg_list = seg_list
         self.vsm_name = VSM_NAME % vsm_name
+        self.texts = []
+        self.vsm = []
+        self.rows = rows
         self.redis_client = redis_client()
 
     def build_vsm(self):
@@ -39,7 +43,7 @@ class BuildVSM(object):
         keywords = [word for word, _ in tf_idf_list]
         keywords_length = len(keywords)
         self.remove_vsm_when_exists()
-        for words in self.seg_list:
+        for words, row in zip(self.seg_list, self.rows):
             score = [0.0] * keywords_length
             unique_word = list(set(words) & set(keywords))  # 筛选出words中对应keywords中存在的关键词
             for word in unique_word:
@@ -50,7 +54,17 @@ class BuildVSM(object):
                 continue
             score = map(str, score)
             score_str = ' '.join(score)
+            self.texts.append(row)
+            self.vsm.append(score_str)
             self.redis_client.lpush(self.vsm_name, score_str)
+        set_vsm_to_file("total", self.vsm, self.texts)
+
+    def filter_text(self):
+        """ 过滤文本并返回.
+
+        :return:
+        """
+        return self.texts
 
     def remove_vsm_when_exists(self):
         if self.redis_client.llen(self.vsm_name):
@@ -65,10 +79,12 @@ def run_build_vsm(start_time, end_time):
     :return:
     """
     rows = get_text_from_mysql("content", start_time=start_time, end_time=end_time)
-    from pprint import pprint
-    pprint(rows)
     tf_idf = TFIDF(rows)
     tf_idf_dict = tf_idf.tf_idf()
-    vsm = BuildVSM(tf_idf_dict, tf_idf.seg_list, vsm_name="total")
+    texts = tf_idf.get_filter_text()
+    from pprint import pprint
+    print([text[0] for text in texts])
+    print(tf_idf.seg_list)
+    vsm = BuildVSM(tf_idf_dict, tf_idf.seg_list, texts, vsm_name="total")
     vsm.build_vsm()
-    return rows
+    return vsm.filter_text()

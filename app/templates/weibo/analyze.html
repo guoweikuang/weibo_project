@@ -31,38 +31,38 @@
 
 <br/>
 
-<div class="container">
-	<form class="form-inline">
-	  <div class="form-group">
-      <label for="exampleInputEmail2">分类结果</label>
-      	    <select class="form-control" name="category">
-	    	  {% if word_tag %}
+<!--<div class="container">-->
+	<!--<form class="form-inline">-->
+	  <!--<div class="form-group">-->
+      <!--<label for="exampleInputEmail2">分类结果</label>-->
+      	    <!--<select class="form-control" name="category">-->
+	    	  <!--{% if word_tag %}-->
 
-                  {% for word in word_tag %}
-                       <option>{{ word }}</option>
-                      <p>{{ word }}</p>
-                  {% endfor %}
-                      {% else %}
-                      <p>没有分类</p>
-              {% endif %}
-		    </select>
-	    <label for="exampleInputEmail2">选择聚类结果</label>
-	    <select class="form-control" name="name">
-	    	  {% if category_list %}
+                  <!--{% for word in word_tag %}-->
+                       <!--<option>{{ word }}</option>-->
+                      <!--<p>{{ word }}</p>-->
+                  <!--{% endfor %}-->
+                      <!--{% else %}-->
+                      <!--<p>没有分类</p>-->
+              <!--{% endif %}-->
+		    <!--</select>-->
+	    <!--<label for="exampleInputEmail2">选择聚类结果</label>-->
+	    <!--<select class="form-control" name="name">-->
+	    	  <!--{% if category_list %}-->
 
-              {% for category in category_list %}
-                   <option>{{category}}</option>
-                  <p>{{ category }}</p>
-              {% endfor %}
-                  {% else %}
-                  <p>没有分类</p>
-            {% endif %}
-		</select>
-	  </div>
-    <button type="submit" class="btn btn-default">寻找</button>
-	</form>
+              <!--{% for category in category_list %}-->
+                   <!--<option>{{category}}</option>-->
+                  <!--<p>{{ category }}</p>-->
+              <!--{% endfor %}-->
+                  <!--{% else %}-->
+                  <!--<p>没有分类</p>-->
+            <!--{% endif %}-->
+		<!--</select>-->
+	  <!--</div>-->
+    <!--<button type="submit" class="btn btn-default">寻找</button>-->
+	<!--</form>-->
 
-</div>
+<!--</div>-->
 
 <div class="container">
     <table class=" table table-hover">

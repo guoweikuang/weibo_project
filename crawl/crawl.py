@@ -5,15 +5,20 @@ async crawl weibo
 
 @author guoweikuang
 """
-
+import time
+import random
 from crawl.weibo import Spider
 from crawl.weibo import Parser
 
 
 def async_crawl_weibo(start_page=1, end_page=5):
     spider = Spider(base_url="https://weibo.cn/gzyhl", name="17317540230", async=True)
-
-    responses = [spider.get_response(page=page) for page in range(start_page, end_page + 1)]
+    responses = []
+    for page in range(start_page, end_page+1):
+        if page % 10 == 0:
+            time.sleep(random.randint(0, 2))
+        responses.append(spider.get_response(page=page))
+    #responses = [spider.get_response(page=page) for page in range(start_page, end_page + 1)]
     # print(responses[0].text)
     return responses
 

@@ -28,27 +28,36 @@ class TFIDF(object):
         self.counter = Counter()
         self.tf_dict = {}
         self.tf_idf_dict = {}
+        self.filter_text = []
         self.get_total_seg_content()
 
-    def participle_text(self, text, word=7):
+    def participle_text(self, texts, word=7):
         """ 使用jieba对文本进行分词
 
         :return
         """
-        text = filter_title(text)
+        text = filter_title(texts[0])
         seg_list = jieba.cut(text, cut_all=False)
         seg_content = set(seg_list) - self.stop_words
         seg_content = list(seg_content)
         if len(seg_content) >= word:
+            self.filter_text.append(texts)
             for word in seg_content:
                 self.counter[word] += 1
             return seg_content
         return
 
+    def get_filter_text(self):
+        """ get text after filter
+
+        :return:
+        """
+        return self.filter_text
+
     def get_total_seg_content(self):
         """ 获取所有的文本分词后的集合 """
         for row in self.rows:
-            seg = self.participle_text(row[0])
+            seg = self.participle_text(row)
             if seg:
                 self.seg_list.append(seg)
         return self.seg_list

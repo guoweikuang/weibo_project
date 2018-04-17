@@ -12,6 +12,7 @@ import requests
 import random
 import shutil
 from functools import wraps
+from fake_useragent import UserAgent
 
 from .redis_client import redis_client
 from .config import WEIBO_LOGIN_COOKIE
@@ -26,6 +27,7 @@ from .const import MINUTES_BEFORE
 from .const import MINUTES_PATTERN
 from .const import URL_PATTERN
 from .const import NUMBER_PATTERN
+from .const import USER_AGENT_LIST
 from .logger import logger
 from .config import get_jieba_dict_path
 from .config import abs_path
@@ -35,21 +37,23 @@ session = requests.Session()
 
 
 # User-Agent list
-USER_AGENT_LIST = [
-    'Mozilla/4.0 (compatible; MSIE 5.0; SunOS 5.10 sun4u; X11)',
-    'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Avant Browser;',
-    'Mozilla/4.0 (compatible; MSIE 7.0b; Windows NT 5.1)',
-    'Microsoft Internet Explorer/4.0b1 (Windows 95)',
-    'Opera/8.00 (Windows NT 5.1; U; en)',
-    'Mozilla/4.0 (compatible; MSIE 5.0; AOL 4.0; Windows 95; c_athome)',
-    'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)',
-    'Mozilla/5.0 (compatible; Konqueror/3.5; Linux) KHTML/3.5.5 (like Gecko) (Kubuntu)',
-    'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0; ZoomSpider.net bot; .NET CLR 1.1.4322)',
-    'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; QihooBot 1.0 qihoobot@qihoo.net)',
-]
+# USER_AGENT_LIST = [
+#     'Mozilla/4.0 (compatible; MSIE 5.0; SunOS 5.10 sun4u; X11)',
+#     'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Avant Browser;',
+#     'Mozilla/4.0 (compatible; MSIE 7.0b; Windows NT 5.1)',
+#     'Microsoft Internet Explorer/4.0b1 (Windows 95)',
+#     'Opera/8.00 (Windows NT 5.1; U; en)',
+#     'Mozilla/4.0 (compatible; MSIE 5.0; AOL 4.0; Windows 95; c_athome)',
+#     'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)',
+#     'Mozilla/5.0 (compatible; Konqueror/3.5; Linux) KHTML/3.5.5 (like Gecko) (Kubuntu)',
+#     'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0; ZoomSpider.net bot; .NET CLR 1.1.4322)',
+#     'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; QihooBot 1.0 qihoobot@qihoo.net)',
+# ]
 
 
 def get_agent_from_random():
+    #ua = UserAgent()
+    #return ua.random
     return random.choice(USER_AGENT_LIST)
 
 
