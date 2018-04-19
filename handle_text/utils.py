@@ -81,7 +81,7 @@ def classify_k_cluster_to_file(labels, texts, vsm_name="total", filename="cluste
         vsm = vsm.decode('utf-8').encode('utf-8')
         with open(vsm_path, 'ab') as fp:
             fp.write(text)
-            fp.write(vsm + '\n'.encode('utf-8'))
+            #fp.write(vsm + '\n'.encode('utf-8'))
 
 
 def get_vsm_from_redis(vsm_name):
@@ -152,4 +152,21 @@ def set_vsm_to_file(vsm_name, scores, texts):
     for score, text in zip(scores, texts):
         with open(filename, 'ab') as fp:
             fp.write(score.encode('utf-8') + '\n'.encode('utf-8'))
-            fp.write(text[0].encode('utf-8') + '\n'.encode('utf-8'))
+            #fp.write(text[0].encode('utf-8') + '\n'.encode('utf-8'))
+
+
+def get_text_from_file(filename):
+    """ 获取微博数据从文本中.
+
+    :param filename:
+    :return:
+    """
+    file_path = os.path.join(abs_path, 'cluster_result/data/%s.txt' % filename)
+    result = []
+    with open(file_path, 'rb') as fp:
+        for line in fp.readlines():
+            text, comment, like, date = line.decode('utf-8').split('\t')
+            if len(text) >= 10 and int(comment) > 2:
+                result.append(line)
+
+    return result
