@@ -34,6 +34,30 @@ class KMeans(object):
             centroids[:, j] = min_j + range__j * numpy.random.rand(self.k, 1)
         return centroids  # 返回一个随机的质心矩阵
 
+    def set_rand_cent(self):
+        """ 人工设置簇心
+
+        :return:
+        """
+        m = numpy.shape(self.data_set)[0]   # 行数
+        n = numpy.shape(self.data_set)[1]   # 列数
+        init_data = self.data_set[0, :]
+        result = {}
+        centroids = numpy.mat(numpy.zeros((self.k, n)))
+        centroids[0, :] = init_data
+        for j in range(1, self.k):
+            distances = {}
+            for i in range(1, n):
+                distance = self.euclidean_distance(vector1=init_data, vector2=self.data_set[i, :])
+                if i in result.keys():
+                    continue
+                distances[i] = distance
+            index, max_distance = sorted(distances.items(), key=lambda d: d[1], reverse=True)[0]
+            result[index] = max_distance
+            centroids[j, :] = self.data_set[index, :]
+            init_data = self.data_set[index, :]
+        return numpy.mat(centroids)
+
     @staticmethod
     def euclidean_distance(vector1, vector2):
         """
@@ -85,6 +109,8 @@ class KMeans(object):
         # 随机生成一个质心矩阵蔟
         centroids = self.rand_cent()
         #print(centroids)
+        centroids = self.set_rand_cent()
+        print(centroids)
         cluster_change = True
 
         while cluster_change:
@@ -141,10 +167,9 @@ def run_kmeans_by_scikit(k, vsm_name="total"):
     return labels
 
 
-
 def run_min_kmeans(k, vsm_name='total'):
     """
-    使用scikit-learn 库的kmeans算法
+    使用scikit-learn 库的min means算法
     :param k: 设置k个簇心
     :return:
     """
@@ -158,7 +183,7 @@ def run_min_kmeans(k, vsm_name='total'):
 
 def run_mean_shift(vsm_name='total'):
     """
-    使用scikit-learn 库的kmeans算法
+    使用scikit-learn 库的mean shift算法
     :param k: 设置k个簇心
     :return:
     """

@@ -26,6 +26,8 @@ DATETIME_PATTERN = "(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})"
 # 提取微博url 进行判重
 URL_PATTERN = r"comment\/(\w+)\?uid"
 
+# 去除表情 [狗]
+WEIBO_EMOJI_PATTERN = r"\[.*?\]"
 
 # 表情
 EMOJI_PATTERN = re.compile(

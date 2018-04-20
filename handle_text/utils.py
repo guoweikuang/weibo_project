@@ -38,11 +38,6 @@ def classify_k_cluster_to_redis(labels, texts, filename="cluster_result"):
     :param texts: 所有文本
     :return:
     """
-    # file_path = os.path.join(abs_path, filename)
-    #
-    # if os.path.exists(file_path):
-    #     shutil.rmtree(file_path, True)
-
     label_type = set(labels)
     client = redis_client()
 
@@ -70,8 +65,8 @@ def classify_k_cluster_to_file(labels, texts, vsm_name="total", filename="cluste
     label_type = set(labels)
     vsms = get_vsm_from_redis(key_name)[::-1]
     is_cluster_file_exists(filename)
-    for label in label_type:
-        filename = "cluster_{}".format(label + 1)
+    #for label in label_type:
+        #filename = "cluster_{}".format(label + 1)
         #is_cluster_file_exists(filename)
 
     for label, rows, vsm in zip(labels, texts, vsms):

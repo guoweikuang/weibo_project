@@ -28,6 +28,7 @@ from .const import MINUTES_PATTERN
 from .const import URL_PATTERN
 from .const import NUMBER_PATTERN
 from .const import USER_AGENT_LIST
+from .const import WEIBO_EMOJI_PATTERN
 from .logger import logger
 from .config import get_jieba_dict_path
 from .config import abs_path
@@ -175,6 +176,7 @@ def filter_title(title):
     :return:
     """
     title = re.sub(NUMBER_PATTERN, "", title)
+    title = re.sub(WEIBO_EMOJI_PATTERN, '', title)
     title = title.replace("   \u200b\u200b\u200b", '').replace(" ", '').strip()
     return title
 

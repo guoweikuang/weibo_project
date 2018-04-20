@@ -92,21 +92,23 @@ def run_build_vsm(start_time, end_time):
     return vsm.filter_text()
 
 
-def run_build_vsm_by_file():
+def run_build_vsm_by_file(filename="total"):
     """ 构建vsm 通过文本, 测试专用.
 
     :return:
     """
     from pprint import pprint
-    rows = get_text_from_file('total')
+    rows = get_text_from_file("school")
     rows = [row.decode('utf-8').strip().split('\t') for row in rows]
     tf_idf = TFIDF(rows)
     tf_idf_dict = tf_idf.tf_idf()
     texts = tf_idf.get_filter_text()
     print([text[0] for text in texts])
     #print(tf_idf.seg_list)
-    for seg in tf_idf.seg_list:
-        print(seg)
+    #for seg, text in zip(tf_idf.seg_list, texts):
+    #    if len(seg) > 10:
+    #        print(text[0])
+    #        print(seg)
     logger.info(tf_idf.counter.most_common(50))
     vsm = BuildVSM(tf_idf_dict, tf_idf.seg_list, texts, vsm_name="total")
     vsm.build_vsm()
