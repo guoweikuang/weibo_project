@@ -26,6 +26,12 @@ wheels/
 migrations/
 cluster_result/
 temp/
+classify_text/test_bag
+classify_text/test_corpus
+classify_text/test_seg
+classify_text/train_corpus
+classify_text/train_seg
+classify_text/train_bag
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
