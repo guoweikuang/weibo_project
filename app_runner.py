@@ -10,6 +10,8 @@ import arrow
 from crawl.crawl import run_async_crawl
 from handle_text.k_means import run_kmeans
 from handle_text.k_means import run_kmeans_by_scikit
+from handle_text.k_means import run_min_kmeans
+from handle_text.k_means import run_mean_shift
 from handle_text.build_vsm import run_build_vsm
 from handle_text.build_vsm import run_build_vsm_by_file
 from handle_text.utils import classify_k_cluster_to_file
@@ -26,6 +28,8 @@ if __name__ == '__main__':
     #rows = run_build_vsm(start_time=start, end_time=now)
     rows = run_build_vsm_by_file()
     #labels = run_kmeans(k=6, vsm_name="total")
-    labels = run_kmeans_by_scikit(k=3, vsm_name="total")
+    #labels = run_kmeans_by_scikit(k=3, vsm_name="total")
+    #labels = run_min_kmeans(k=2, vsm_name='total')
+    labels = run_kmeans_by_scikit(k=12, vsm_name='total')
     classify_k_cluster_to_redis(labels=labels, texts=rows)
     classify_k_cluster_to_file(labels=labels, texts=rows)

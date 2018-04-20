@@ -8,6 +8,9 @@ K-Means module
 import numpy
 from common.utils import load_data_set
 from sklearn.cluster import KMeans as K_Means
+from sklearn.cluster import MiniBatchKMeans
+from sklearn.cluster import MeanShift
+from .utils import find_optimal_k_value
 
 
 class KMeans(object):
@@ -128,10 +131,40 @@ def run_kmeans_by_scikit(k, vsm_name="total"):
     :param k: 设置k个簇心
     :return:
     """
+    
     data_set = numpy.mat(load_data_set(vsm_name=vsm_name))
+    # k = find_optimal_k_value(data_set)
     k_means = K_Means(init="k-means++", n_clusters=k)
-
     matrix = k_means.fit_predict(data_set)
     labels = list(matrix)
+    print(labels)
+    return labels
+
+
+
+def run_min_kmeans(k, vsm_name='total'):
+    """
+    使用scikit-learn 库的kmeans算法
+    :param k: 设置k个簇心
+    :return:
+    """
+    data_set = numpy.mat(load_data_set(vsm_name=vsm_name))
+    k_means = MiniBatchKMeans(init="k-means++", n_clusters=k)
+    matrix = k_means.fit_predict(data_set)
+    labels = list(matrix)
+    print(labels)
+    return labels
+
+
+def run_mean_shift(vsm_name='total'):
+    """
+    使用scikit-learn 库的kmeans算法
+    :param k: 设置k个簇心
+    :return:
+    """
+    data_set = numpy.mat(load_data_set(vsm_name=vsm_name))
+    k_means = MeanShift()
+    matrix = k_means.fit(data_set)
+    labels = list(matrix.labels_)
     print(labels)
     return labels

@@ -98,13 +98,15 @@ def run_build_vsm_by_file():
     :return:
     """
     from pprint import pprint
-    rows = get_text_from_file('cluster_1')
+    rows = get_text_from_file('total')
     rows = [row.decode('utf-8').strip().split('\t') for row in rows]
     tf_idf = TFIDF(rows)
     tf_idf_dict = tf_idf.tf_idf()
     texts = tf_idf.get_filter_text()
-    pprint([text[0] for text in texts])
-    pprint(tf_idf.seg_list)
+    print([text[0] for text in texts])
+    #print(tf_idf.seg_list)
+    for seg in tf_idf.seg_list:
+        print(seg)
     logger.info(tf_idf.counter.most_common(50))
     vsm = BuildVSM(tf_idf_dict, tf_idf.seg_list, texts, vsm_name="total")
     vsm.build_vsm()

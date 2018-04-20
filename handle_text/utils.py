@@ -11,6 +11,8 @@ from common.config import abs_path
 from common.config import VSM_NAME
 from common.config import CLUSTER_RESULT
 from common.redis_client import redis_client
+from sklearn import metrics
+from sklearn.cluster import KMeans
 
 
 def load_data_set(vsm_name):
@@ -81,7 +83,7 @@ def classify_k_cluster_to_file(labels, texts, vsm_name="total", filename="cluste
         vsm = vsm.decode('utf-8').encode('utf-8')
         with open(vsm_path, 'ab') as fp:
             fp.write(text)
-            #fp.write(vsm + '\n'.encode('utf-8'))
+            fp.write(vsm + '\n'.encode('utf-8'))
 
 
 def get_vsm_from_redis(vsm_name):
@@ -170,3 +172,14 @@ def get_text_from_file(filename):
                 result.append(line)
 
     return result
+
+
+def find_optimal_k_value(data_set):
+    scores = {}
+    for k in range(2, 13):
+        cluster = KMeans(init='k-means++', n_clusters=k)
+        matrix = cluster.fit_predict(data_set)
+        scores[k] = metrics.calinski_harabaz_score(data_set, matrix)
+    scores = sorted(scores.items(), key=lambda d:d[1], reverse=True)
+    print(scores)
+    return scores[0][0]
