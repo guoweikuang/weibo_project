@@ -32,6 +32,7 @@ classify_text/test_seg
 classify_text/train_corpus
 classify_text/train_seg
 classify_text/train_bag
+classify_text/data
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
