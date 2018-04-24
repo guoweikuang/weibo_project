@@ -31,10 +31,10 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a href="{{ url_for('weibo.crawl') }}">数据挖掘</a></li>
-                <li><a href="#">数据图表展示</a></li>
+                <li><a href="{{ url_for('weibo.crawl') }}">数据爬取</a></li>
+                <li><a href="{{ url_for('weibo.analyze') }}">热点话题发现</a></li>
                 <li><a href="#">舆情类别</a></li>
-                <li><a href="#">热点话题发现</a></li>
+                <li><a href="#">敏感词发现</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if current_user.is_authenticated %}
@@ -44,7 +44,7 @@
                              账号<b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="#">更改密码</a></li>
-                                <li><a href="#">登出</a></li>
+                                <li><a href="{{ url_for('auth.logout') }}">登出</a></li>
                             </ul>
                     </li>
                 {% else %}

@@ -213,7 +213,7 @@ def classify_k_cluster_to_redis(labels, texts, filename="cluster_result"):
     label_type = set(labels)
     client = redis_client()
 
-    for label in label_type:
+    for label in range(1, 15):
         key_name = CLUSTER_RESULT % str(label+1)
         if client.llen(key_name):
             client.delete(key_name)

@@ -98,7 +98,7 @@ def run_build_vsm_by_file(filename="total"):
     :return:
     """
     from pprint import pprint
-    rows = get_text_from_file("school")
+    rows = get_text_from_file("学校新闻")
     rows = [row.decode('utf-8').strip().split('\t') for row in rows]
     tf_idf = TFIDF(rows)
     tf_idf_dict = tf_idf.tf_idf()

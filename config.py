@@ -30,6 +30,7 @@ class Config(object):
     MYSQL_URL = MYSQL_URL.format(username=USERNAME, password=PASSWORD)
     #CELERY_BROKER_URL = 'redis://localhost:6379',
     # CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+    BABEL_DEFAULT_LOCALE = 'zh_CN'
 
 
     def init_app(app):

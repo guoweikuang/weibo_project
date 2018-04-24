@@ -108,9 +108,7 @@ class KMeans(object):
 
         # 随机生成一个质心矩阵蔟
         centroids = self.rand_cent()
-        #print(centroids)
         centroids = self.set_rand_cent()
-        print(centroids)
         cluster_change = True
 
         while cluster_change:

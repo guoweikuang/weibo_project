@@ -7,6 +7,7 @@ classify module
 """
 import os
 import jieba
+import shutil
 import pickle
 from sklearn.datasets.base import Bunch
 from sklearn.feature_extraction.text import TfidfTransformer
@@ -50,6 +51,9 @@ class Perdict(object):
         :return:
         """
         if not os.path.exists(path):
+            os.makedirs(path)
+        else:
+            shutil.rmtree(path)
             os.makedirs(path)
 
     def save_seg_content(self):
@@ -158,7 +162,7 @@ class Perdict(object):
 
 
 def run_classify(corpus_path, seg_path, bag_path, test_bag_path, test_corpus_path, test_seg_path):
-    #classify = Perdict(corpus_path, seg_path, bag_path, test_bag_path)
+    #classify = Perdict(corpus_path, seg_path, bag_path, bag_path)
     #classify.save_seg_content()
     #classify.save_bunch('train_set')
 

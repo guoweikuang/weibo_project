@@ -69,7 +69,7 @@ class Parser(object):
                 url = items.find('a', class_="cc")
                 url = url.get('href')
                 print(comment_num, like_num, title, url)
-                self.result.append((title, comment_num, like_num, url))
+                self.result.append((title, comment_num, like_num, pub_time))
                 self.client.save_data_to_mysql(title, pub_time, comment_num, like_num, url)
 
     def extract_title(self, title):

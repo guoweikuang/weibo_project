@@ -32,10 +32,13 @@ def run_async_crawl(start_page=1, end_page=5):
     :return:
     """
     responses = async_crawl_weibo(start_page=start_page, end_page=end_page)
+    result = []
     apps = [Parser(response.text) for response in responses]
     for app in apps:
         app.extract_text()
+        result.extend(app.result)
     apps[0].close_client()
+    return result
 
 
 def run_async_crawl_by_day(start_time, days=5):

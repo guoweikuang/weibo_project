@@ -24,17 +24,19 @@ from classify_text.config import corpus_path, seg_path, bag_path, test_bag_path,
 
 
 if __name__ == '__main__':
-    run_classify(corpus_path, seg_path, bag_path, test_bag_path, test_corpus_path, test_seg_path)
     #run_crawl_by_multiprocess(1, 20, 4)
     #run_async_crawl(1, 10)
     now = arrow.utcnow().date()
     start = arrow.utcnow().shift(days=-20).date()
-    rows = run_build_vsm(start_time=start, end_time=now)
+    #rows = run_build_vsm(start_time=start, end_time=now)
+    rows = run_build_vsm_by_file()
     #run_classify_text(rows)
-    #rows = run_build_vsm_by_file()
     labels = run_kmeans(k=4, vsm_name="total")
-    #labels = run_kmeans_by_scikit(k=3, vsm_name="total")
+    labels = run_kmeans_by_scikit(k=3, vsm_name="total")
     #labels = run_min_kmeans(k=2, vsm_name='total')
     #labels = run_kmeans_by_scikit(k=12, vsm_name='total')
     classify_k_cluster_to_redis(labels=labels, texts=rows)
     classify_k_cluster_to_file(labels=labels, texts=rows)
+
+    #run_classify_text(rows)
+    #run_classify(corpus_path, seg_path, bag_path, test_bag_path, test_corpus_path, test_seg_path)

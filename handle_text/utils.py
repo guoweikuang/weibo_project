@@ -163,7 +163,9 @@ def get_text_from_file(filename):
     with open(file_path, 'rb') as fp:
         for line in fp.readlines():
             text, comment, like, date = line.decode('utf-8').split('\t')
-            if len(text) >= 10 and int(comment) > 2:
+            if len(text) >= 10 and int(like) >= 10:
+                result.append(line)
+            elif len(text) >= 10 and int(comment) >= 2:
                 result.append(line)
 
     return result
@@ -175,6 +177,6 @@ def find_optimal_k_value(data_set):
         cluster = KMeans(init='k-means++', n_clusters=k)
         matrix = cluster.fit_predict(data_set)
         scores[k] = metrics.calinski_harabaz_score(data_set, matrix)
-    scores = sorted(scores.items(), key=lambda d:d[1], reverse=True)
+    scores = sorted(scores.items(), key=lambda d: d[1], reverse=True)
     print(scores)
     return scores[0][0]

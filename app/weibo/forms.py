@@ -38,3 +38,5 @@ class AnalyzeForm(FlaskForm):
     k_cluster = IntegerField("设置簇心数", validators=[DataRequired(
                                                     message="请输入聚类的k值（就是聚成几类)")])
     submit = SubmitField("开始分析")
+
+
