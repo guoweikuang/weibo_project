@@ -5,8 +5,10 @@ text vector
 
 @author guoweikuang
 """
+import os
 from common.redis_client import redis_client
 from common.config import VSM_NAME
+from common.config import abs_path
 from common.logger import logger
 from common.mysql_client import get_text_from_mysql
 from .tf_idf import TFIDF
@@ -83,7 +85,6 @@ def run_build_vsm(start_time, end_time):
     tf_idf = TFIDF(rows)
     tf_idf_dict = tf_idf.tf_idf()
     texts = tf_idf.get_filter_text()
-    # from pprint import pprint
     print([text[0] for text in texts])
     print(tf_idf.seg_list)
     logger.info(tf_idf.counter.most_common(50))
@@ -97,19 +98,44 @@ def run_build_vsm_by_file(filename="total"):
 
     :return:
     """
-    from pprint import pprint
-    rows = get_text_from_file("学校新闻")
+    rows = get_text_from_file("cluster_3")
     rows = [row.decode('utf-8').strip().split('\t') for row in rows]
     tf_idf = TFIDF(rows)
     tf_idf_dict = tf_idf.tf_idf()
     texts = tf_idf.get_filter_text()
     print([text[0] for text in texts])
-    #print(tf_idf.seg_list)
-    #for seg, text in zip(tf_idf.seg_list, texts):
-    #    if len(seg) > 10:
-    #        print(text[0])
-    #        print(seg)
     logger.info(tf_idf.counter.most_common(50))
     vsm = BuildVSM(tf_idf_dict, tf_idf.seg_list, texts, vsm_name="total")
+    vsm.build_vsm()
+    return vsm.filter_text()
+
+
+def run_build_vsm_by_category(path):
+    """ build vsm by category.
+
+    :param path: file path
+    :return:
+    """
+    categorys = os.listdir(os.path.join(abs_path, 'classify_text/data'))
+    for category in categorys:
+        rows = get_text_from_file(category[:-4], cate='category')
+        rows = [row.decode('utf-8').strip().split('\t') for row in rows]
+        tf_idf = TFIDF(rows)
+        tf_idf_dict = tf_idf.tf_idf()
+        texts = tf_idf.get_filter_text()
+        vsm = BuildVSM(tf_idf_dict, tf_idf.seg_list, texts, vsm_name=category[:-4])
+        vsm.build_vsm()
+
+
+def run_build_vsm_by_texts(texts, vsm_name="second"):
+    """
+
+    :param texts:
+    :return:
+    """
+    tf_idf = TFIDF(rows=texts)
+    tf_idf_dict = tf_idf.tf_idf()
+    results = tf_idf.get_filter_text()
+    vsm = BuildVSM(tf_idf_dict, tf_idf.seg_list, results, vsm_name=vsm_name)
     vsm.build_vsm()
     return vsm.filter_text()

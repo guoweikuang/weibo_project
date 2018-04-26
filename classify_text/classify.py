@@ -153,20 +153,18 @@ class Perdict(object):
             if flabel != expct_cate:
                 rate += 1
                 print(file_name)
-                print("实际类别:" + flabel)
-                print("-->预测类别:")
-                print(expct_cate)
+                print("实际类别:" + flabel + "-->预测类别:", expct_cate)
                 print('====' * 40)
                 remove_and_restart_join(self.corpus_path, file_name, expct_cate, flabel)
         print("error_rate: ", float(rate) * 100 / float(total))
 
 
 def run_classify(corpus_path, seg_path, bag_path, test_bag_path, test_corpus_path, test_seg_path):
-    #classify = Perdict(corpus_path, seg_path, bag_path, bag_path)
-    #classify.save_seg_content()
-    #classify.save_bunch('train_set')
+    classify = Perdict(corpus_path, seg_path, bag_path, bag_path)
+    classify.save_seg_content()
+    classify.save_bunch('train_set')
 
-    #classify.tf_idf(file_name='train_set')
+    classify.tf_idf(file_name='train_set')
 
     test_classify = Perdict(test_corpus_path, test_seg_path, test_bag_path, bag_path)
     test_classify.save_seg_content()

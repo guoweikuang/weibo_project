@@ -9,6 +9,7 @@ import os
 import shutil
 import jieba
 from .config import test_corpus_path
+from .config import corpus_path
 from .utils import load_stop_word
 from .config import all_tag
 from .config import word_tag
@@ -32,7 +33,7 @@ class Classify(object):
         :param filename:
         :return:
         """
-        file_path = os.path.join(test_corpus_path, category)
+        file_path = os.path.join(corpus_path, category)
         full_path = os.path.join(file_path, '%s.txt' % filename)
         with open(full_path, 'wb') as fp:
             fp.write(content.encode('utf-8'))
@@ -43,11 +44,11 @@ class Classify(object):
         :return:
         """
         for word in word_tag:
-            category_path = os.path.join(test_corpus_path, word)
+            category_path = os.path.join(corpus_path, word)
             self.create_or_exist(category_path)
-
+        #self.create_or_exist(os.path.join(corpus_path, "毕业"))
         for index, row in enumerate(self.rows):
-            if len(row[0]) < 10 and int(row[2]) < 2:
+            if len(row[0]) < 10 and int(row[1]) < 1:
                 continue
             seg_list = jieba.cut(row[0], cut_all=False)
             seg = [word for word in seg_list if word not in self.stop_list]
@@ -64,5 +65,6 @@ def run_classify_text(rows):
     :param rows:
     :return:
     """
+    print(rows)
     classify = Classify(rows=rows)
     classify.classify_text()

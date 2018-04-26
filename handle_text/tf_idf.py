@@ -41,6 +41,8 @@ class TFIDF(object):
         seg_content = set(seg_list) - self.stop_words
         seg_content = list(seg_content)
         if len(seg_content) >= word:
+            print(seg_content)
+            print(text)
             self.filter_text.append(texts)
             for word in seg_content:
                 self.counter[word] += 1

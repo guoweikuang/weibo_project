@@ -11,6 +11,16 @@ VSM_NAME = "vsm:name:%s"
 # 聚类结果存入redis 键名
 CLUSTER_RESULT = "cluster:%s:text"
 
+#
+K_CLUSTER = "%s:cluster:%s"
+
+
+# hot topic
+HOT_CLUSTER = "cluster:%s:hot"
+
+# every cluster hot
+EVERY_HOT_CLUSTER = "category:%s:hot"
+
 
 class Config(object):
     """数据库连接配置"""

@@ -191,3 +191,14 @@ def run_mean_shift(vsm_name='total'):
     labels = list(matrix.labels_)
     print(labels)
     return labels
+
+
+def run_second_kmeans(k, vsm_name="vsm"):
+    """ run k-means second.
+
+    :param k:
+    :param vsm_name:
+    :return:
+    """
+    labels = run_kmeans_by_scikit(k, vsm_name=vsm_name)
+    return labels

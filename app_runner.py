@@ -15,6 +15,9 @@ from handle_text.k_means import run_mean_shift
 from handle_text.build_vsm import run_build_vsm
 from handle_text.build_vsm import run_build_vsm_by_file
 from handle_text.utils import classify_k_cluster_to_file
+from utils import run_first_cluster
+from utils import run_second_cluster
+from utils import run_hot_topic
 from login.login import run_login_weibo
 from common.utils import classify_k_cluster_to_redis
 from crawl.crawl import run_crawl_by_multiprocess
@@ -31,12 +34,15 @@ if __name__ == '__main__':
     #rows = run_build_vsm(start_time=start, end_time=now)
     rows = run_build_vsm_by_file()
     #run_classify_text(rows)
-    labels = run_kmeans(k=4, vsm_name="total")
+    #labels = run_kmeans(k=4, vsm_name="total")
     labels = run_kmeans_by_scikit(k=3, vsm_name="total")
     #labels = run_min_kmeans(k=2, vsm_name='total')
     #labels = run_kmeans_by_scikit(k=12, vsm_name='total')
-    classify_k_cluster_to_redis(labels=labels, texts=rows)
+    #classify_k_cluster_to_redis(labels=labels, texts=rows)
+    print(rows)
     classify_k_cluster_to_file(labels=labels, texts=rows)
-
+    #run_second_cluster()
+    run_hot_topic()
+    #run_first_cluster('1', '1')
     #run_classify_text(rows)
     #run_classify(corpus_path, seg_path, bag_path, test_bag_path, test_corpus_path, test_seg_path)

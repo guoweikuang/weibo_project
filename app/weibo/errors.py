@@ -14,9 +14,9 @@ def page_not_found(e):
     return render_template('404.html'), 404
 
 
-@weibo.app_errorhandler(403)
+@weibo.app_errorhandler(401)
 def forbidden(e):
-    return render_template('403.html'), 403
+    return render_template('403.html'), 401
 
 
 @weibo.app_errorhandler(500)
