@@ -34,7 +34,8 @@
                 <li><a href="{{ url_for('weibo.crawl') }}">数据爬取</a></li>
                 <li><a href="{{ url_for('weibo.analyze') }}">热点话题发现</a></li>
                 <li><a href="#">舆情类别</a></li>
-                <li><a href="#">敏感词发现</a></li>
+                <li><a href="{{ url_for('weibo.sensitive') }}">敏感词发现</a></li>
+                <li><a href="{{ url_for('weibo.display') }}">图表展示</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if current_user.is_authenticated %}

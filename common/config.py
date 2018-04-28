@@ -21,6 +21,13 @@ HOT_CLUSTER = "cluster:%s:hot"
 # every cluster hot
 EVERY_HOT_CLUSTER = "category:%s:hot"
 
+# keywor cluster
+EVERY_TOP_KEYWORD = "keyword:%s:top"
+
+
+# 过滤分词数小于条件值的文本
+FITLER_CONDITION = 5
+
 
 class Config(object):
     """数据库连接配置"""
@@ -44,3 +51,8 @@ def get_jieba_dict_path(dict_name):
     """
     PATH = os.path.join(abs_path, 'dict/%s' % dict_name)
     return PATH
+
+
+def get_picture_path(fiie_name="index"):
+    pic_path = os.path.join(abs_path, "app/static/images")
+    return pic_path

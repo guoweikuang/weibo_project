@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %} 敏感词展示 {% endblock %}
+
+
+{% block page_content %}
+<div class="container">
+    <div class="row">
+    <div class="python-jumbotron jumbotron">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-4">
+            <img src="{{url_for('static', filename='img/python-logo.png')}}" alt="python_logo">
+          </div>
+          <div class="col-lg-8">
+            <p style="color: #e6e8ea">
+              python 用于微博舆情监控系统的展示平台，以下是 广中医I栋 聚类后的有关数据。根据算法计算得到的热点话题进行舆情监控。
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+</div>
+<img src="{{ url_for('static', filename="images/sensitive.png") }}">
+
+<div class="container">
+<form class="form-inline">
+  <div class="form-group">
+  <label for="exampleInputEmail2">舆情话题类型</label>
+        <select class="form-control" name="category">
+          {% if categorys %}
+
+          {% for category in categorys %}
+               <option>{{ category }}</option>
+
+          {% endfor %}
+              {% else %}
+              <p>没有分类</p>
+        {% endif %}
+        </select>
+
+
+  </div>
+<button type="submit" class="btn btn-default">寻找</button>
+</form>
+
+</div>
+
+<div class="container">
+  		<table class=" table table-hover">
+  			<thead>
+                <th class="active">ID</th>
+  				<th class="active">舆情类型</th>
+                <th class="active">敏感字</th>
+  				<th class="active">微博内容</th>
+  				<th class="active">评论个数</th>
+  				<th class="active">点赞数</th>
+  				<th class="active">发布时间</th>
+  			</thead>
+
+            <tbody>
+
+            {% for content in rows %}
+            <tr>
+                <td class="active">{{ loop.index }}</td>
+                <td class="active">{{ content[0] }}</td>
+            	  <td class="success">{{ content[1] }}</td>
+				  <td class="warning">{{ content[2] }}</td>
+				  <td class="danger">{{ content[4] }}</td>
+                <td class="info">{{ content[5] }}</td>
+                <td class="warning">{{ content[3] }}</td>
+            </tr>
+            </tbody>
+                {% endfor %}
+
+        </table>
+</div>
+
+
+{% endblock %}

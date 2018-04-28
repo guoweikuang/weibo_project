@@ -7,6 +7,8 @@ handle something module
 @author guoweikuang
 """
 import arrow
+from collections import defaultdict
+
 from flask_admin import BaseView
 from flask_admin import expose
 from flask_admin.contrib.sqla import ModelView
@@ -17,6 +19,7 @@ from common.mysql_client import get_mysql_client
 from common.mysql_client import get_text_from_mysql
 from handle_text.k_means import run_kmeans_by_scikit
 from common.utils import classify_k_cluster_to_redis
+from common.const import sensetive_dict
 
 
 class AdminView(BaseView):
@@ -95,3 +98,19 @@ def get_mysql_content(days=1):
                                 start_time=start_time,
                                 end_time=end_time)
     return datas
+
+
+def get_mysql_opinion():
+    client = get_mysql_client()
+    sql = "SELECT event_type, sen_word, weibo_text, pub_time, comment, like_num FROM opinion;"
+    client.cur.execute(sql)
+    rows = client.cur.fetchall()
+
+    results = defaultdict(list)
+    sensitive = list(sensetive_dict.keys())
+    for row in rows:
+        for sen in sensitive:
+            if row[0] == sen:
+                results[sen].append(row)
+
+    return results

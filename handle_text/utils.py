@@ -257,3 +257,16 @@ def find_optimal_k_value(data_set):
         max_socres = 3
 
     return max_socres
+
+
+def get_hot_score_from_redis(db=2):
+    """ 获取热度值从redis.
+
+    :param db:
+    :return:
+    """
+    client = redis_client()
+
+
+
+

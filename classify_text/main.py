@@ -33,7 +33,7 @@ class Classify(object):
         :param filename:
         :return:
         """
-        file_path = os.path.join(corpus_path, category)
+        file_path = os.path.join(test_corpus_path, category)
         full_path = os.path.join(file_path, '%s.txt' % filename)
         with open(full_path, 'wb') as fp:
             fp.write(content.encode('utf-8'))
@@ -44,7 +44,7 @@ class Classify(object):
         :return:
         """
         for word in word_tag:
-            category_path = os.path.join(corpus_path, word)
+            category_path = os.path.join(test_corpus_path, word)
             self.create_or_exist(category_path)
         #self.create_or_exist(os.path.join(corpus_path, "毕业"))
         for index, row in enumerate(self.rows):

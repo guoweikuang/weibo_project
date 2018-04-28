@@ -98,3 +98,27 @@ def get_text_from_mysql(table_name, start_time, end_time):
         client.close_mysql()
 
     return rows
+
+
+def get_from_mysql(table_name, start_time, end_time):
+    """获取指定时间段数据
+
+    :param database_name: 数据库名称
+    :param start_time: 开始时间
+    :param end_time: 结束时间
+    :return:
+    """
+    client = get_mysql_client()
+    rows = []
+    sql = "SELECT title, pub_time, comment_num, like_num, url FROM %s WHERE pub_time BETWEEN '%s' AND '%s'"
+    sql = sql % (table_name, start_time, end_time)
+    try:
+        client.cur.execute(sql)
+        #client.cur.execute(sql, (database_name, start_time, end_time))
+        rows = client.cur.fetchall()
+
+    except Exception as e:
+        logger.error("mysql select error: %s", e)
+        client.close_mysql()
+
+    return rows

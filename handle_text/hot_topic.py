@@ -5,12 +5,14 @@ hot topic calculation
 
 @author guoweikuang
 """
+import re
 import math
 from common.redis_client import redis_client
 from common.config import K_CLUSTER
 from common.config import CLUSTER_RESULT
 from common.config import HOT_CLUSTER
 from common.config import EVERY_HOT_CLUSTER
+from common.config import EVERY_TOP_KEYWORD
 from handle_text.tf_idf import TFIDF
 
 
@@ -29,22 +31,22 @@ class HotTopic(object):
             keyword = "%s:second:%s" % (category, str(i)) if category else str(i)
             key_name = CLUSTER_RESULT % keyword
             category_key = EVERY_HOT_CLUSTER % keyword
+            keyword_key = EVERY_TOP_KEYWORD % keyword
             if self.client.llen(key_name):
-                self.create_or_remove(key_name)
+                #self.create_or_remove(key_name)
                 rows = self.client.lrange(key_name, 0, -1)
-                rows = [row.decode('utf-8') for row in rows]
-                tf_idf = TFIDF(rows)
+                rows = [row.decode('utf-8').split('\t') for row in rows]
+                tf_idf = TFIDF(rows=rows)
                 tf_dict = tf_idf.tf_idf()
+                print(sorted(tf_dict.items(), key=lambda d: d[1],reverse=True))
                 max_hot_value[key_name] = 0
                 for row in rows:
-                    text, comment, like, pub_time = row.strip().split('\t')
+                    text, comment, like, pub_time = row
                     max_hot_value[key_name] += float(comment) + float(math.sqrt(int(like)))
                 self.hot_client.set(category_key, max_hot_value[key_name])
+                self.save_keywords_to_redis(keyword_key, tf_dict)
         hot_values = sorted(max_hot_value.items(), key=lambda d: d[1], reverse=True)
-        print(hot_values)
-        max_hot = hot_values[0][0]
-        hot_key = HOT_CLUSTER % (category)
-        self.hot_client.set(hot_key, hot_values[0][1])
+        self.save_max_hot_to_redis(hot_values[0][0], hot_values[0][1], category)
 
     def create_or_remove(self, key_name):
         """
@@ -55,9 +57,23 @@ class HotTopic(object):
         if self.hot_client.llen(key_name):
             self.hot_client.delete(key_name)
 
-    def save_keywords_to_redis(self, tf_dict):
+    def save_max_hot_to_redis(self, hot_key, hot_values, category):
+        max_key = hot_key.replace("cluster:", '').replace(":text", '')
+        hot_key = HOT_CLUSTER % max_key
+        if category == '学校新闻':
+            hot_values = hot_values * 2
+        self.hot_client.set(hot_key, hot_values)
+        self.hot_client.set("cluster:%s:hot" % category, hot_values)
+
+    def save_keywords_to_redis(self, key_name, tf_dict):
         """ save key to redis.
 
         :param tf_dict:
         :return:
         """
+        if self.hot_client.hkeys(key_name):
+            for keys in self.hot_client.hkeys(key_name):
+                self.hot_client.hdel(key_name, keys)
+        tf_dict = sorted(tf_dict.items(), key=lambda d: d[1], reverse=True)
+        for key, value in tf_dict[:10]:
+            self.hot_client.hset(key_name, key, value)

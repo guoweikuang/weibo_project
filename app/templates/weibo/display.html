@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %} 图表展示 {% endblock %}
+
+
+{% block page_content %}
+<div class="container">
+    <div class="row">
+    <div class="python-jumbotron jumbotron">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-4">
+            <img src="{{url_for('static', filename='img/python-logo.png')}}" alt="python_logo">
+          </div>
+          <div class="col-lg-8">
+            <p style="color: #e6e8ea">
+              python 用于微博舆情监控系统的展示平台，以下是 广中医I栋 聚类后的有关数据。根据算法计算得到的热点话题进行舆情监控。
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+</div>
+<img src="{{ url_for('static', filename="images/hot.png") }}">
+{% endblock %}

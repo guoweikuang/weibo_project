@@ -8,6 +8,7 @@ main module
 from flask import render_template
 from flask import redirect
 from flask import url_for
+from flask import request
 from flask_login import login_required
 
 from . import weibo
@@ -19,6 +20,7 @@ from ..utils import filter_data
 from ..utils import run_k_means
 from ..utils import classify_k_cluster
 from ..utils import get_mysql_content
+from ..utils import get_mysql_opinion
 
 
 @weibo.route('/', methods=['GET', 'POST'])
@@ -56,3 +58,33 @@ def analyze():
         classify_k_cluster(labels=labels, datas=datas)
         # return redirect(url_for("weibo.show_data"))
     return render_template('weibo/analyze.html', form=analyze_form)
+
+
+@weibo.route('/display', methods=['GET', 'POST'])
+@login_required
+def display():
+    """ 图表展示.
+    :return:
+    """
+    return render_template('weibo/display.html')
+
+
+@weibo.route('/sensitive', methods=['GET', 'POST'])
+@login_required
+def sensitive():
+    """
+    敏感词.
+    :return:
+    """
+    results = get_mysql_opinion()
+    opinion = ['心理健康', '社会突发事件', '校园安全', '反动言论']
+
+    sen_type = request.values.get("category")
+    if sen_type:
+        opinion.remove(sen_type)
+        opinion.insert(0, sen_type)
+        rows = results[sen_type]
+    else:
+        rows = results[opinion[0]]
+
+    return render_template('weibo/sensitive.html', rows=rows, categorys=opinion)

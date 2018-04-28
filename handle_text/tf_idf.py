@@ -13,6 +13,7 @@ from collections import Counter
 from common.config import get_jieba_dict_path
 from common.utils import load_stop_words
 from common.utils import filter_title
+from .filter_condition import is_seg_content_condition
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from . import jieba
 
@@ -31,7 +32,7 @@ class TFIDF(object):
         self.filter_text = []
         self.get_total_seg_content()
 
-    def participle_text(self, texts, word=7):
+    def participle_text(self, texts, word=5):
         """ 使用jieba对文本进行分词
 
         :return
@@ -40,9 +41,7 @@ class TFIDF(object):
         seg_list = jieba.cut(text, cut_all=False)
         seg_content = set(seg_list) - self.stop_words
         seg_content = list(seg_content)
-        if len(seg_content) >= word:
-            print(seg_content)
-            print(text)
+        if is_seg_content_condition(seg_content):
             self.filter_text.append(texts)
             for word in seg_content:
                 self.counter[word] += 1
@@ -94,14 +93,10 @@ class TFIDF(object):
         使用scikit-learn 库
         :return:
         """
-        print(self.seg_list)
         seg_list = [' '.join(seg) for seg in self.seg_list]
         vectorizer = CountVectorizer()
         X = vectorizer.fit_transform(seg_list)
         transformer = TfidfTransformer()
         tfidf = transformer.fit_transform(X)
         weight = tfidf.toarray()
-        print(weight)
         word = vectorizer.get_feature_names()
-        print(word)
-        print(X.toarray())

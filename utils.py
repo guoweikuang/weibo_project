@@ -37,8 +37,8 @@ def run_first_cluster(start_time, end_time):
     for category in categorys:
         rows = get_text_from_file(category[:-4], cate='category')
         rows = [row.decode('utf-8').strip().split('\t') for row in rows]
-        if len(rows) < 10:
-            continue
+        #if len(rows) < 10:
+        #    continue
         tf_idf = TFIDF(rows)
         tf_idf_dict = tf_idf.tf_idf()
         texts = tf_idf.get_filter_text()
@@ -46,11 +46,15 @@ def run_first_cluster(start_time, end_time):
         vsm.build_vsm()
 
         rows = vsm.filter_text()
-        data_set = numpy.mat(load_data_set(vsm_name=category[:-4]))
-        k = find_optimal_k_value(data_set)
+        #data_set = numpy.mat(load_data_set(vsm_name=category[:-4]))
+        # k = find_optimal_k_value(data_set)
         k = 4
         if category[:-4] == '校园生活':
             k = 2
+        if len(rows) <= 5:
+            k = 1
+        if len(rows) <= 15:
+            k = 1
         labels = run_kmeans_by_scikit(k=k, vsm_name=category[:-4])
         save_k_cluster_to_redis(labels=labels, texts=rows, category=category[:-4])
         classify_k_cluster_from_category(labels=labels, texts=rows, vsm_name=category[:-4], category=category[:-4])
@@ -96,11 +100,8 @@ def run_second_cluster():
         else:
             k = 3
         vsm_name = category[:-4] + ':second'
-        print('==========')
-        print(len(results))
         texts = run_build_vsm_by_texts(results, vsm_name=vsm_name)
         labels = run_kmeans_by_scikit(k=k, vsm_name=vsm_name)
-        print(texts)
         classify_k_cluster_to_redis(labels=labels, texts=texts, category=category[:-4], db=1)
 
 
@@ -114,4 +115,3 @@ def run_hot_topic():
     for category in categorys:
         topic = HotTopic(db=1, hot_db=2)
         topic.get_second_cluster_hot(category[:-4])
-

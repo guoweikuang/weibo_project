@@ -160,11 +160,11 @@ class Perdict(object):
 
 
 def run_classify(corpus_path, seg_path, bag_path, test_bag_path, test_corpus_path, test_seg_path):
-    classify = Perdict(corpus_path, seg_path, bag_path, bag_path)
-    classify.save_seg_content()
-    classify.save_bunch('train_set')
+    #classify = Perdict(corpus_path, seg_path, bag_path, bag_path)
+    #classify.save_seg_content()
+    #classify.save_bunch('train_set')
 
-    classify.tf_idf(file_name='train_set')
+    #classify.tf_idf(file_name='train_set')
 
     test_classify = Perdict(test_corpus_path, test_seg_path, test_bag_path, bag_path)
     test_classify.save_seg_content()

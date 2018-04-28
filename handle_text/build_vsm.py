@@ -86,7 +86,7 @@ def run_build_vsm(start_time, end_time):
     tf_idf_dict = tf_idf.tf_idf()
     texts = tf_idf.get_filter_text()
     print([text[0] for text in texts])
-    print(tf_idf.seg_list)
+    #print(tf_idf.seg_list)
     logger.info(tf_idf.counter.most_common(50))
     vsm = BuildVSM(tf_idf_dict, tf_idf.seg_list, texts, vsm_name="total")
     vsm.build_vsm()
@@ -98,12 +98,12 @@ def run_build_vsm_by_file(filename="total"):
 
     :return:
     """
-    rows = get_text_from_file("cluster_3")
+    rows = get_text_from_file("old_mysql")
     rows = [row.decode('utf-8').strip().split('\t') for row in rows]
     tf_idf = TFIDF(rows)
     tf_idf_dict = tf_idf.tf_idf()
     texts = tf_idf.get_filter_text()
-    print([text[0] for text in texts])
+    #print([text[0] for text in texts])
     logger.info(tf_idf.counter.most_common(50))
     vsm = BuildVSM(tf_idf_dict, tf_idf.seg_list, texts, vsm_name="total")
     vsm.build_vsm()

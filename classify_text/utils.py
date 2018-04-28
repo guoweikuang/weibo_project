@@ -7,9 +7,13 @@ classify text utils module
 """
 import os
 import re
+import arrow
 import pickle
+import pymysql
 from .config import stop_path
 from .config import FILENAME_PATTERN
+
+from common.config import abs_path
 
 
 def read_file(path):
@@ -122,3 +126,57 @@ def classify_result(path, result_path):
                 content = fp.read()
             with open(file_path, 'ab') as fp:
                 fp.write(content + '\n'.encode('utf-8'))
+
+
+def use_mysql(database="weibo"):
+    """
+
+    :param database:
+    :return:
+    """
+    conn = pymysql.connect(host='localhost',
+                           user='root',
+                           passwd='2014081029',
+                           db=database,
+                           charset='utf8')
+    cur = conn.cursor()
+    return conn, cur
+
+
+def read_text_old_mysql(end_time, days, database="weibo"):
+    """ 读取数据从旧数据库
+
+    :param database:
+    :return:
+    """
+    conn, cur = use_mysql(database=database)
+    sql = "select * from content;"
+    cur.execute(sql)
+    rows = cur.fetchall()
+
+    result = []
+    start_time = end_time.shift(days=-days)
+    for row in rows:
+        pub_time = arrow.get(row[2], 'YYYY-MM-DD')
+        pub_timestamp = pub_time.timestamp
+
+        if start_time.timestamp <= pub_timestamp <= end_time.timestamp and len(row[1]) >= 10:
+            temp = [row[1], row[4], row[5], row[2]]
+            result.append(temp)
+    return result
+
+
+def save_to_file(file_name, rows):
+    """ 保存数据到文本中，test使用.
+
+    :param file_name:
+    :param rows:
+    :return:
+    """
+    file_path = os.path.join(abs_path, 'cluster_result/data/%s.txt' % file_name)
+    if os.path.exists(file_path):
+        os.remove(file_path)
+    with open(file_path, 'ab') as fp:
+        for row in rows:
+            text = '\t'.encode('utf-8').join([i.encode('utf-8') for i in row]) + '\n'.encode('utf-8')
+            fp.write(text)
