@@ -18,3 +18,18 @@ def is_seg_content_condition(seg_content):
     if len(seg_content) < FITLER_CONDITION:
         return False
     return True
+
+
+def filter_texts(texts):
+    """
+    过滤文本
+    :param texts:
+    :return:
+    """
+    result = []
+    for text in texts:
+        if len(text[0]) < 10 and int(text[2]) >= 10:
+            result.append(text)
+        elif len(text[0]) >= 10 and int(text[1]) >= 2:
+            result.append(text)
+    return result

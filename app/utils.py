@@ -6,8 +6,10 @@ handle something module
 
 @author guoweikuang
 """
+import re
 import arrow
 from collections import defaultdict
+from pyecharts import Bar
 
 from flask_admin import BaseView
 from flask_admin import expose
@@ -20,6 +22,13 @@ from common.mysql_client import get_text_from_mysql
 from handle_text.k_means import run_kmeans_by_scikit
 from common.utils import classify_k_cluster_to_redis
 from common.const import sensetive_dict
+from utils import run_old_all_process
+from handle_text.hot_topic import get_max_hot_topic
+from handle_text.hot_topic import get_hot_keyword
+from handle_text.hot_topic import get_max_text
+from handle_text.hot_topic import list_hot_topic
+from handle_text.hot_topic import get_texts_from_redis
+from handle_text.draw_chart import run_get_hot_scores
 
 
 class AdminView(BaseView):
@@ -48,6 +57,17 @@ class UserView(ModelView):
     column_exclude_list = (
         'password_hash',
     )
+
+    def is_accessible(self):
+        if current_user.is_authenticated and current_user.is_administator():
+            return True
+        return False
+
+
+class ContentView(ModelView):
+    can_delete = False
+    can_edit = False
+    can_create = False
 
     def is_accessible(self):
         if current_user.is_authenticated and current_user.is_administator():
@@ -114,3 +134,56 @@ def get_mysql_opinion():
                 results[sen].append(row)
 
     return results
+
+
+def get_max_hot_keyword_chart():
+    category, hot_value = get_max_hot_topic(db=1)
+    keywords, index = get_hot_keyword(db=1)
+    img_name = "%s%s" % (category, str(index)) + '.png'
+    results = get_max_text(category, index)
+    return keywords, img_name, results
+
+
+def get_max_text_from_mysql(category, index):
+    """
+
+    :param category:
+    :param index:
+    :return:
+    """
+    results = get_max_text(category, index)
+    results = [result.split('\t') for result in results]
+    return results
+
+
+def list_top_hot_topic():
+    """
+    当前时间段的热点话题排行榜.
+    :return:
+    """
+    sequence = list_hot_topic(db=1)
+    result = []
+    for index, seq in enumerate(sequence):
+        name, num = seq[0].split(':')
+        new_name = name + "第%s类" % (num)
+        sequence[index].pop(0)
+        sequence[index].insert(0, new_name)
+    return sequence
+
+
+def get_hot_text_from_category(category, db=0):
+    pattern = re.compile(r"第(\d+)类")
+    cate_num = re.search(pattern, category).group(1)
+    name = category.split('第')
+    key_name = name[0]
+    results = get_texts_from_redis(key_name, cate_num, db=db)
+    results = [res.decode('utf-8').split('\t') for res in results]
+    return results
+
+
+def bar_chart():
+    keys, values = run_get_hot_scores(db=1)
+    bar = Bar('聚类结果各类别的最大热度值')
+    bar.add('最大热度值',
+            keys, values, is_more_utils=True)
+    return bar

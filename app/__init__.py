@@ -28,6 +28,7 @@ babel = Babel()
 from .models import User
 from .utils import UserView
 from .utils import AdminView
+from .utils import ContentView
 
 
 def create_app(config_name):
@@ -49,6 +50,7 @@ def create_app(config_name):
     #admin.add_view(AdminView(name='微博'))
     #admin.add_view(ModelView(User, db.session))
     admin.add_view(UserView(User, db.session, name='用户信息'))
+    #admin.add_view(ContentView())
 
     # register weibo buleprint to app instance
     from .weibo import weibo

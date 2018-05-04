@@ -5,11 +5,13 @@ sensitive
 
 @author guoweikuang
 """
+import arrow
 from collections import defaultdict
 from common.const import sensetive
 from common.const import sensetive_dict
 from common.mysql_client import get_mysql_client
 from common.utils import filter_url_mark
+from common.mysql_client import get_text_from_mysql
 from common.logger import logger
 
 
@@ -29,37 +31,24 @@ class Sensitive(object):
                             print(sen, word)
                             self.save_sensitive_to_mysql(row[0], sen, word, row)
 
-    # def is_repeat(self, url):
-    #     for row in self.rows:
-    #         mark = filter_url_mark(row[6]).encode('utf-8')
-    #         self.urls.append(mark)
-    #     filter_url = filter_url_mark(url).encode('utf-8')
-    #     if filter_url in self.urls:
-    #         return False
-    #     return True
     def filter_text(self, text):
-        if '跳楼大甩卖' in text or '跳楼价' in text:
+        if '跳楼大甩卖' in text or '跳楼价' in text or "跳楼机" in text:
             return False
         return True
 
     def is_repeat_text(self, text):
         texts = self.read_sensitive_from_mysql()
         texts = [text[0] for text in texts]
-        print(texts)
-        print(text in texts)
-        #assert text in texts
         if text in texts:
             return False
         return True
 
     def save_sensitive_to_mysql(self, title, event, sensitive, row):
         print(title, event, sensitive, row[3])
-        pub_time = row[3].strip()
+        pub_time = row[3]
         try:
             sql = "INSERT INTO opinion(event_type, sen_word, weibo_text, pub_time, comment, like_num) " \
                   "VALUES(%s, %s,%s, %s, %s, %s);"
-            #sql = sql % (event, sensitive, title, pub_time)
-            #print(self.is_repeat_text(title))
             if not self.is_repeat_text(title):
                 return
 
@@ -81,6 +70,11 @@ def run_sensitive(rows):
     sensitive.find_sensitive_from_mysql()
 
 
+def run_schedule_text_from_mysql():
+    now = arrow.utcnow().date()
+    start = now.shift(days=-10).date()
+    rows = get_text_from_mysql('content', start, now)
+    return rows
 
 
 

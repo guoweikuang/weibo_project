@@ -21,6 +21,43 @@
       </div>
     </div>
 </div>
+    <img src="{{ url_for('static', filename="images/hot.png") }}">
+    <img src="{{ url_for('static', filename=img_name) }}">
+
+    <br/>
+<br/>
+    <h3>该段时间热点话题关键字主要为：<br/>
+{#        {% for keyword in keywords[:5] %}#}
+        <h2><p align="center">{{ keywords[-1] }}、 {{ keywords[-2] }}、 {{ keywords[-3] }}、 {{ keywords[-4]}}、 {{ keywords[-5] }} </p></h2>
+    </h3>
+
+    <h3>根据直方图的热度值，得出该段时间的热点话题如下：</h3>
 </div>
-<img src="{{ url_for('static', filename="images/hot.png") }}">
+
+
+<div class="container">
+  		  		<table class=" table table-hover">
+  			<thead>
+     			<th class="active">ID</th>
+  				<th class="active">微博内容</th>
+  				<th class="active">评论个数</th>
+  				<th class="active">点赞数</th>
+  				<th class="active">创建时间</th>
+  			</thead>
+
+            <tbody>
+
+                {% for content in rows %}
+            <tr>
+                <td class="info">{{ loop.index }}</td>
+            	  <td class="success">{{ content[0] }}</td>
+				  <td class="warning">{{ content[1] }}</td>
+				  <td class="danger">{{ content[2] }}</td>
+                  <td class="info">{{ content[3]}}</td>
+            </tr>
+            </tbody>
+                {% endfor %}
+
+        </table>
+</div>
 {% endblock %}

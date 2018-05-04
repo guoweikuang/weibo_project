@@ -86,7 +86,7 @@ def get_text_from_mysql(table_name, start_time, end_time):
     """
     client = get_mysql_client()
     rows = []
-    sql = "SELECT title, pub_time, comment_num, like_num FROM %s WHERE pub_time BETWEEN '%s' AND '%s'"
+    sql = "SELECT title, comment_num, like_num, pub_time FROM %s WHERE pub_time BETWEEN '%s' AND '%s'"
     sql = sql % (table_name, start_time, end_time)
     try:
         client.cur.execute(sql)

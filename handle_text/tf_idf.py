@@ -14,6 +14,7 @@ from common.config import get_jieba_dict_path
 from common.utils import load_stop_words
 from common.utils import filter_title
 from .filter_condition import is_seg_content_condition
+from .filter_condition import filter_texts
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from . import jieba
 
@@ -42,6 +43,7 @@ class TFIDF(object):
         seg_content = set(seg_list) - self.stop_words
         seg_content = list(seg_content)
         if is_seg_content_condition(seg_content):
+
             self.filter_text.append(texts)
             for word in seg_content:
                 self.counter[word] += 1
@@ -53,7 +55,8 @@ class TFIDF(object):
 
         :return:
         """
-        return self.filter_text
+        result = filter_texts(self.filter_text)
+        return result
 
     def get_total_seg_content(self):
         """ 获取所有的文本分词后的集合 """

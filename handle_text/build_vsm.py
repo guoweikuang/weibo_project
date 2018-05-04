@@ -53,6 +53,8 @@ class BuildVSM(object):
                 word_num = self.tf_idf.get(word, 0.0)
                 index = keywords.index(word)
                 score[index] = round(word_num, 3)
+
+            # 过滤掉向量值为零的向量
             if sum(score) == 0:
                 continue
             score = map(str, score)
@@ -60,7 +62,7 @@ class BuildVSM(object):
             self.texts.append(row)
             self.vsm.append(score_str)
             self.redis_client.lpush(self.vsm_name, score_str)
-        set_vsm_to_file("total", self.vsm, self.texts)
+        # set_vsm_to_file("total", self.vsm, self.texts)
 
     def filter_text(self):
         """ 过滤文本并返回.
@@ -86,24 +88,22 @@ def run_build_vsm(start_time, end_time):
     tf_idf_dict = tf_idf.tf_idf()
     texts = tf_idf.get_filter_text()
     print([text[0] for text in texts])
-    #print(tf_idf.seg_list)
     logger.info(tf_idf.counter.most_common(50))
     vsm = BuildVSM(tf_idf_dict, tf_idf.seg_list, texts, vsm_name="total")
     vsm.build_vsm()
-    return vsm.filter_text()
+    return vsm.filter_text(), rows
 
 
-def run_build_vsm_by_file(filename="total"):
+def run_build_vsm_by_file(filename="old_mysql"):
     """ 构建vsm 通过文本, 测试专用.
 
     :return:
     """
-    rows = get_text_from_file("old_mysql")
+    rows = get_text_from_file(filename=filename)
     rows = [row.decode('utf-8').strip().split('\t') for row in rows]
     tf_idf = TFIDF(rows)
     tf_idf_dict = tf_idf.tf_idf()
     texts = tf_idf.get_filter_text()
-    #print([text[0] for text in texts])
     logger.info(tf_idf.counter.most_common(50))
     vsm = BuildVSM(tf_idf_dict, tf_idf.seg_list, texts, vsm_name="total")
     vsm.build_vsm()

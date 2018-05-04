@@ -22,7 +22,7 @@ class Spider(object):
     def __init__(self, base_url, name, async=False):
         self.base_url = base_url
         self.name = name
-        self.session = session_client(name=name) if not async else async_session_client(name=name)
+        self.session = session_client(name=name) if not async else async_session_client()
 
     @verify_response_status(200)
     def get_response(self, page=1):

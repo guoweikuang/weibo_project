@@ -58,10 +58,10 @@ class Login(object):
         return get_login_headers()
 
 
-def run_login_weibo(login_url, username, password):
+def run_login_weibo(username, password, login_url='https://passport.weibo.cn/sso/login'):
     """
     登录微博
-    :param login_url: 登录链接
+    :param login_url: 登录链接, (https://passport.weibo.cn/sso/login)
     :param username:  微博用户名
     :param password:  密码
     :return:

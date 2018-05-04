@@ -11,6 +11,7 @@ import requests
 import grequests
 
 from .utils import get_cookies_from_redis
+from .utils import get_cookies_random_from_redis
 from .utils import get_login_headers
 from .utils import get_common_headers
 
@@ -40,7 +41,10 @@ def async_session_client(mode="common", name=None):
     :param mode: 登录模式，如果是login则切换不同headers
     :param return: session 对象
     """
-    cookies = get_cookies_from_redis(name)
+    if not name:
+        cookies = get_cookies_random_from_redis()
+    else:
+        cookies = get_cookies_from_redis(name)
     headers = get_common_headers()
     if mode == "login":
         headers = get_login_headers()

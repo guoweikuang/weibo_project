@@ -6,4 +6,91 @@
 
 
 {% block page_content %}
+<br />
+<h3>当前时间段的热点话题如下：</h3>
+<div class="container">
+  		  		<table class=" table table-hover">
+  			<thead>
+     			<th class="active">排名</th>
+  				<th class="active">热点事件类别</th>
+  				<th class="active">热点事件关键词</th>
+  				<th class="active">热度值</th>
+  			</thead>
+
+            <tbody>
+
+                {% for content in rows %}
+            <tr>
+                <td class="info">{{ loop.index }}</td>
+            	  <td class="success">{{ content[0] }}</td>
+				  <td class="warning">{{ content[1] }}</td>
+				  <td class="info">{{ content[2] | round(2) }}</td>
+            </tr>
+            </tbody>
+                {% endfor %}
+
+        </table>
+</div>
+
+<br />
+
+
+<div class="container">
+<form class="form-inline">
+  <div class="form-group">
+  <label for="exampleInputEmail2">热度话题类型</label>
+        <select class="form-control" name="topic">
+          {% if categorys %}
+
+          {% for category in categorys %}
+               <option>{{ category }}</option>
+
+          {% endfor %}
+              {% else %}
+              <p>没有分类</p>
+        {% endif %}
+        </select>
+
+
+  </div>
+<button type="submit" class="btn btn-default">寻找</button>
+</form>
+
+</div>
+
+<div class="container">
+    <table class="table table-hover table-striped table-condensed">
+  			<thead>
+     			<th class="active">ID</th>
+  				<th class="active">微博内容</th>
+  				<th class="active">评论个数</th>
+  				<th class="active">点赞数</th>
+  				<th class="active">创建时间</th>
+  			</thead>
+
+            <tbody>
+
+                {% for content in contents %}
+                <!--
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ content[0] }}</td>
+                    <td>{{ content[1] }}</td>
+                    <td>{{ content[2] }}</td>
+                    <td>{{ content[3] }}</td>
+                </tr>
+                -->
+
+                <td class="info">{{ loop.index }}</td>
+            	  <td class="success">{{ content[0] }}</td>
+				  <td class="warning">{{ content[1] }}</td>
+				  <td class="danger">{{ content[2] }}</td>
+                  <td class="info">{{ content[3]}}</td>
+                </tr>
+            </tbody>
+                {% endfor %}
+
+    </table>
+</div>
+
 {% endblock %}

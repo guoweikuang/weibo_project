@@ -46,8 +46,8 @@ class Classify(object):
         for word in word_tag:
             category_path = os.path.join(test_corpus_path, word)
             self.create_or_exist(category_path)
-        #self.create_or_exist(os.path.join(corpus_path, "毕业"))
         for index, row in enumerate(self.rows):
+            # 过滤文本长度小于10 和 评论数小于1的文本
             if len(row[0]) < 10 and int(row[1]) < 1:
                 continue
             seg_list = jieba.cut(row[0], cut_all=False)
@@ -55,6 +55,7 @@ class Classify(object):
 
             for tag, name in zip(all_tag, word_tag):
                 if len(set(tag) & set(seg)) != 0:
+                    row = list(map(str, row))
                     content = '\t'.join(row)
                     self.save_to_file(filename=index, category=name, content=content)
 

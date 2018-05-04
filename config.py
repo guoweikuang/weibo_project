@@ -32,7 +32,6 @@ class Config(object):
     # CELERY_RESULT_BACKEND = 'redis://localhost:6379'
     BABEL_DEFAULT_LOCALE = 'zh_CN'
 
-
     def init_app(app):
         pass
 

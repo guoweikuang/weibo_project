@@ -78,6 +78,12 @@ def save_k_cluster_to_redis(labels, texts, category="total"):
         client.lpush(key_name, text)
 
 
+def save_cluster(labels, texts):
+    client = redis_client()
+    for label in range(1, 15):
+        key = CLUSTER_RESULT % str(label)
+
+
 def classify_k_cluster_to_file(labels, texts, vsm_name="total", filename="result", category='result'):
     """ 对k-means 聚类后结果写入文本.
 
@@ -114,19 +120,18 @@ def classify_k_cluster_from_category(labels, texts, vsm_name='total', filename='
     """
     key_name = VSM_NAME % vsm_name
     vsms = get_vsm_from_redis(key_name)[::-1]
-    # is_cluster_file_exists(filename)
     create_or_exists(category)
 
     for label, rows, vsm in zip(labels, texts, vsms):
         filename = "cluster_{}".format(label+1)
         vsm_path = os.path.join(abs_path, 'cluster_result/category/%s/%s.txt' % (category, filename))
-        title, pub_time, comment_num, like_num = rows
+        title, comment_num, like_num, pub_time = rows
         text = title.encode('utf-8') + '\t'.encode('utf-8') + comment_num.encode('utf-8') + '\t'.encode('utf-8') \
                + like_num.encode('utf-8') + '\t'.encode('utf-8') + pub_time.encode('utf-8') + '\n'.encode('utf-8')
         vsm = vsm.decode('utf-8').encode('utf-8')
         with open(vsm_path, 'ab') as fp:
             fp.write(text)
-            #fp.write(vsm + '\n'.encode('utf-8'))
+            fp.write(vsm + '\n'.encode('utf-8'))
 
 
 def get_vsm_from_redis(vsm_name):
@@ -224,6 +229,7 @@ def get_text_from_file(filename, cate='default'):
     with open(file_path, 'rb') as fp:
         for line in fp.readlines():
             text, comment, like, date = line.decode('utf-8').split('\t')
+            # 过滤文本小于10并且评论数小于2
             if len(text) >= 10 and int(like) >= 10:
                 result.append(line)
             elif len(text) >= 10 and int(comment) >= 2:
@@ -232,31 +238,29 @@ def get_text_from_file(filename, cate='default'):
     return result
 
 
-# def get_text_from_category(cate_path):
-#     """ 获取分类数据from 文本.
-#
-#     :param cate_path: category path
-#     :return:
-#     """
-#     file_path = os.path.join(abs_path, 'cluster_text/data/%s.txt' % cate_path)
-
-
 def find_optimal_k_value(data_set):
+    """ 使用scikit-learn 寻找kmeans最合适的k值
+
+    :param data_set:
+    :return:
+    """
     scores = {}
+    m = numpy.shape(data_set)[0]
+    if m <= 10:
+        return 1
     for k in range(2, 13):
         cluster = KMeans(init='k-means++', n_clusters=k)
         matrix = cluster.fit_predict(data_set)
         scores[k] = metrics.calinski_harabaz_score(data_set, matrix)
     scores = sorted(scores.items(), key=lambda d: d[1], reverse=True)
-    print(scores)
 
-    max_socres = scores[0][0]
-    m = numpy.shape(data_set)[0]
+    max_scores = scores[0][0]
+    num = numpy.shape(data_set)[0]  # 文本数
 
-    if m < 20 and m > 7:
-        max_socres = 3
+    if 7 < num < 20:
+        max_scores = 2
 
-    return max_socres
+    return max_scores
 
 
 def get_hot_score_from_redis(db=2):
@@ -268,5 +272,6 @@ def get_hot_score_from_redis(db=2):
     client = redis_client()
 
 
-
-
+def get_categorys():
+    categorys = os.listdir(os.path.join(abs_path, 'classify_text/data'))
+    return categorys

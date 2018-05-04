@@ -13,11 +13,13 @@ import matplotlib.pyplot as plt
 from common.redis_client import redis_client
 from common.config import HOT_CLUSTER
 from common.config import EVERY_TOP_KEYWORD
+from common.config import EVERY_HOT_CLUSTER
 from common.config import CLUSTER_RESULT
 from common.config import get_picture_path
 from common.mysql_client import get_mysql_client
 from common.const import sensetive_dict
-from utils import get_categorys
+from .utils import get_categorys
+
 
 
 matplotlib.matplotlib_fname()
@@ -41,7 +43,6 @@ class DrawChart(object):
         for category in self.categorys:
             category = category[:-4]
             key_name = HOT_CLUSTER % category
-            print(key_name)
             score = self.client.get(key_name)
             if score:
                 self.hot_score[category] = float(score)
@@ -49,7 +50,6 @@ class DrawChart(object):
     def get_hot_score(self):
         for i in range(1, 15):
             key_name = HOT_CLUSTER % str(i)
-            print(key_name)
             score = self.client.get(key_name)
             if score:
                 key = "第%s类" % str(i)
@@ -81,7 +81,7 @@ class DrawChart(object):
         plt.savefig(os.path.join(picture_path, 'hot.png'))
 
     def get_top_keyword(self, category, i):
-        key = "%s:second:%s" % (category, str(i))
+        key = "%s:second:%s" % (category, str(i)) if category else str(i)
         key_name = EVERY_TOP_KEYWORD % key
         if self.client.hkeys(key_name):
             result = self.client.hgetall(key_name)
@@ -89,9 +89,21 @@ class DrawChart(object):
         else:
             return {}
 
-    def draw_category_keyword(self, category):
+    def get_first_keyword(self, category, i):
+        key = "%s:%s" % (category, str(i))
+        key_name = EVERY_TOP_KEYWORD % key
+        if self.client.hkeys(key_name):
+            result = self.client.hgetall(key_name)
+            return result
+        else:
+            return {}
+
+    def draw_category_keyword(self, category, draw_type="first"):
         for i in range(1, 15):
-            keywords = self.get_top_keyword(category, i)
+            if draw_type == 'first':
+                keywords = self.get_first_keyword(category, i)
+            else:
+                keywords = self.get_top_keyword(category, i)
             keywords = sorted(keywords.items(), key=lambda d: d[1], reverse=True)
             keys = [key[0] for key in keywords]
             values = [value[1] for value in keywords]
@@ -198,4 +210,25 @@ def run_draw_top_keyword_barh(db=2):
     categorys = get_categorys()
 
     for category in categorys:
-        draw.draw_category_keyword(category[:-4])
+        draw.draw_category_keyword(category[:-4], draw_type='first')
+
+
+def run_keywrod_barh(db=1):
+    """ 无分类条件下画图
+
+    :param db:
+    :return:
+    """
+    draw = DrawChart(db=db)
+    draw.draw_category_keyword('')
+
+
+def run_get_hot_scores(db=1):
+    draw = DrawChart(db=db)
+    draw.get_category_hot_score()
+
+    hot_scores = draw.hot_score
+    scores = sorted(hot_scores.items(), key=lambda d: d[1])
+    keys = [key[0] for key in scores]
+    values = [key[1] for key in scores]
+    return keys, values

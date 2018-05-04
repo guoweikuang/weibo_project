@@ -23,3 +23,11 @@ CELERYBEAT_SCHEDULE = {
         "args": (1, 20),
     }
 }
+
+
+CELERYBEAT_SCHEDULE = {
+    "sensitive": {
+        "task": "schedule.tasks.schedule_get_sensitive",
+        "schedule": timedelta(hours=2),
+    }
+}

@@ -83,6 +83,17 @@ def get_cookies_from_redis(name):
     return cookies
 
 
+def get_cookies_random_from_redis():
+    """ get cookies random from redis.
+
+    :return:
+    """
+    names = ['15602200534', '17317540230']
+    name = random.choice(names)
+    cookeis = get_cookies_from_redis(name)
+    return cookeis
+
+
 def verify_response_status(status_code):
     def decorator(f):
         @wraps(f)
