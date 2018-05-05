@@ -28,7 +28,6 @@ class Sensitive(object):
                 if word in row[0] and self.filter_text(row[0]):
                     for sen, words in sensetive_dict.items():
                         if word in words:
-                            print(sen, word)
                             self.save_sensitive_to_mysql(row[0], sen, word, row)
 
     def filter_text(self, text):
@@ -44,7 +43,6 @@ class Sensitive(object):
         return True
 
     def save_sensitive_to_mysql(self, title, event, sensitive, row):
-        print(title, event, sensitive, row[3])
         pub_time = row[3]
         try:
             sql = "INSERT INTO opinion(event_type, sen_word, weibo_text, pub_time, comment, like_num) " \

@@ -16,10 +16,10 @@ from common.config import EVERY_TOP_KEYWORD
 from common.config import EVERY_HOT_CLUSTER
 from common.config import CLUSTER_RESULT
 from common.config import get_picture_path
+from common.config import remove_or_create_pic_path
 from common.mysql_client import get_mysql_client
 from common.const import sensetive_dict
 from .utils import get_categorys
-
 
 
 matplotlib.matplotlib_fname()
@@ -47,7 +47,21 @@ class DrawChart(object):
             if score:
                 self.hot_score[category] = float(score)
 
+    def get_second_category_hot_score(self):
+        """ 获取第二次聚类的所有分类热度值.
+
+        :return:
+        """
+        for category in self.categorys:
+            for i in range(1, 15):
+                key_name = HOT_CLUSTER % ('%s:%s' % (category, str(i)))
+                score = self.hot_client.get(key_name)
+
     def get_hot_score(self):
+        """ get hot score.
+
+        :return:
+        """
         for i in range(1, 15):
             key_name = HOT_CLUSTER % str(i)
             score = self.client.get(key_name)
@@ -76,7 +90,7 @@ class DrawChart(object):
             axes.text(rect.get_x() + rect.get_width() / 2, 1.01 * height,
                       '%.2f' % float(height), ha='center', va='bottom')
 
-        picture_path = get_picture_path()
+        picture_path = get_picture_path('hot')
         #plt.show()
         plt.savefig(os.path.join(picture_path, 'hot.png'))
 
@@ -99,6 +113,7 @@ class DrawChart(object):
             return {}
 
     def draw_category_keyword(self, category, draw_type="first"):
+        remove_or_create_pic_path(category)
         for i in range(1, 15):
             if draw_type == 'first':
                 keywords = self.get_first_keyword(category, i)
@@ -123,7 +138,6 @@ class DrawChart(object):
         ind = np.arange(length)
         values = [float(value) for value in values]
         keys = [key.decode('utf-8') for key in keys]
-        #print(values)
         plt.barh(ind, values, align='center', alpha=0.4, color='blue')
         #plt.xticks(ind, keys)
         plt.yticks(ind, keys)
@@ -135,8 +149,7 @@ class DrawChart(object):
         plt.xlim(0, max_value + 0.1)
         plt.xlabel(u'关键词权重')
         plt.title(u'%s 类别下关键词TOP10图' % category)
-        picture_path = get_picture_path()
-        #plt.show()
+        picture_path = get_picture_path(category[:-1])
         plt.savefig(os.path.join(picture_path, '%s.png' % category))
 
     def draw_pie(self):
@@ -167,7 +180,7 @@ class DrawChart(object):
         # 设置x，y轴刻度一致，这样饼图才能是圆的
         plt.axis('equal')
         plt.legend()
-        picture_path = get_picture_path()
+        picture_path = get_picture_path('sensitive')
         plt.savefig(os.path.join(picture_path, 'sensitive.png'))
         plt.show()
 
@@ -200,7 +213,7 @@ def run_draw_pie(db=2):
     draw.draw_pie()
 
 
-def run_draw_top_keyword_barh(db=2):
+def run_draw_top_keyword_barh(db=2, draw_type='first'):
     """ draw top keyword barh.
 
     :param db:
@@ -210,7 +223,7 @@ def run_draw_top_keyword_barh(db=2):
     categorys = get_categorys()
 
     for category in categorys:
-        draw.draw_category_keyword(category[:-4], draw_type='first')
+        draw.draw_category_keyword(category[:-4], draw_type=draw_type)
 
 
 def run_keywrod_barh(db=1):

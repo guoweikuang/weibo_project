@@ -28,7 +28,7 @@ def filter_texts(texts):
     """
     result = []
     for text in texts:
-        if len(text[0]) < 10 and int(text[2]) >= 10:
+        if len(text[0]) < 10 and int(text[2]) >= 5:
             result.append(text)
         elif len(text[0]) >= 10 and int(text[1]) >= 2:
             result.append(text)

@@ -155,7 +155,7 @@ class DrawChart(object):
         # 设置x，y轴刻度一致，这样饼图才能是圆的
         plt.axis('equal')
         plt.legend()
-        picture_path = get_picture_path()
+        picture_path = get_picture_path('sensitive')
         plt.savefig(os.path.join(picture_path, 'sensitive.png'))
         plt.show()
 

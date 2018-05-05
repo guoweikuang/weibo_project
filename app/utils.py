@@ -136,12 +136,12 @@ def get_mysql_opinion():
     return results
 
 
-def get_max_hot_keyword_chart():
-    category, hot_value = get_max_hot_topic(db=1)
-    keywords, index = get_hot_keyword(db=1)
+def get_max_hot_keyword_chart(db=1):
+    category, hot_value = get_max_hot_topic(db=db)
+    keywords, index = get_hot_keyword(db=db)
     img_name = "%s%s" % (category, str(index)) + '.png'
     results = get_max_text(category, index)
-    return keywords, img_name, results
+    return keywords, img_name, results, category
 
 
 def get_max_text_from_mysql(category, index):
@@ -156,15 +156,18 @@ def get_max_text_from_mysql(category, index):
     return results
 
 
-def list_top_hot_topic():
+def list_top_hot_topic(db=1):
     """
     当前时间段的热点话题排行榜.
     :return:
     """
-    sequence = list_hot_topic(db=1)
+    sequence = list_hot_topic(db=db)
     result = []
+    print(sequence)
+    pattern = re.compile(r':(\d+)')
     for index, seq in enumerate(sequence):
-        name, num = seq[0].split(':')
+        name = seq[0].split(':')[0]
+        num = re.search(pattern, seq[0]).group(1)
         new_name = name + "第%s类" % (num)
         sequence[index].pop(0)
         sequence[index].insert(0, new_name)
@@ -175,7 +178,8 @@ def get_hot_text_from_category(category, db=0):
     pattern = re.compile(r"第(\d+)类")
     cate_num = re.search(pattern, category).group(1)
     name = category.split('第')
-    key_name = name[0]
+    key_name = name[0] if db == 0 else "%s:second" % name[0]
+    print(key_name)
     results = get_texts_from_redis(key_name, cate_num, db=db)
     results = [res.decode('utf-8').split('\t') for res in results]
     return results

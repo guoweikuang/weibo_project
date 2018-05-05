@@ -39,7 +39,7 @@ REMOTE_HOST = "https://pyecharts.github.io/assets/js"
 @weibo.route('/', methods=['GET', 'POST'])
 def index():
     """ 首页 """
-    rows = list_top_hot_topic()
+    rows = list_top_hot_topic(db=1)
     category = request.values.get('topic')
     categorys = [cate[0] for cate in rows]
     results = []
@@ -50,6 +50,7 @@ def index():
     else:
         category = categorys[0]
         results = get_hot_text_from_category(category, db=0)
+    print(results)
     return render_template('weibo/index.html', rows=rows, categorys=categorys, contents=results)
 
 
@@ -94,8 +95,8 @@ def display():
     :return:
     """
     result = {}
-    keywords, img_name, rows = get_max_hot_keyword_chart()
-    name = "images/%s" % img_name
+    keywords, img_name, rows, category = get_max_hot_keyword_chart(db=2)
+    name = "images/%s/%s" % (category, img_name)
     results = sorted(keywords.items(), key=lambda d: d[1], reverse=True)[::-1]
     keywords = [key.decode('utf-8') for key, value in results]
     rows = [row.split('\t') for row in rows]

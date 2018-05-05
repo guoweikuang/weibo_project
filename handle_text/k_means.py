@@ -58,8 +58,7 @@ class KMeans(object):
             init_data = self.data_set[index, :]
         return numpy.mat(centroids)
 
-    @staticmethod
-    def euclidean_distance(vector1, vector2):
+    def euclidean_distance(self, vector1, vector2):
         """
         返回两个文本之间的距离
         :param vector1: 文本1的向量列表
@@ -108,7 +107,7 @@ class KMeans(object):
 
         # 随机生成一个质心矩阵蔟
         centroids = self.rand_cent()
-        centroids = self.set_rand_cent()
+        #centroids = self.set_rand_cent()
         cluster_change = True
 
         while cluster_change:

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import shutil
 
 
 WEIBO_LOGIN_KEY = "weibo:username:%s"
@@ -53,6 +54,17 @@ def get_jieba_dict_path(dict_name):
     return PATH
 
 
-def get_picture_path(fiie_name="index"):
+def get_picture_path(category, file_name="index"):
     pic_path = os.path.join(abs_path, "app/static/images")
-    return pic_path
+    image_path = os.path.join(pic_path, category)
+    return image_path
+
+
+def remove_or_create_pic_path(category):
+    pic_path = os.path.join(abs_path, "app/static/images")
+    image_path = os.path.join(pic_path, category)
+    if os.path.exists(image_path):
+        shutil.rmtree(image_path)
+        os.makedirs(image_path)
+    else:
+        os.makedirs(image_path)

@@ -21,6 +21,7 @@ from handle_text.build_vsm import run_build_vsm
 from handle_text.utils import classify_k_cluster_from_category
 from handle_text.build_vsm import run_build_vsm_by_texts
 from handle_text.k_means import run_kmeans_by_scikit
+from handle_text.k_means import run_kmeans
 from handle_text.utils import find_optimal_k_value
 from common.config import abs_path
 from common.config import K_CLUSTER
@@ -55,6 +56,13 @@ def find_best_k_value(rows, category):
 
 
 def run_first_cluster(start_time, end_time, k=1):
+    """ 一次聚类并存入数据库.
+
+    :param start_time:
+    :param end_time:
+    :param k:
+    :return:
+    """
     categories = os.listdir(os.path.join(abs_path, 'classify_text/data'))
     for category in categories:
         rows = get_text_from_file(category[:-4], cate='category')
@@ -69,21 +77,14 @@ def run_first_cluster(start_time, end_time, k=1):
         rows = vsm.filter_text()
         data_set = numpy.mat(load_data_set(vsm_name=category[:-4]))
         k = find_optimal_k_value(data_set)
-        print(k)
-        k = find_best_k_value(rows, category)
-        # k = 4
-        # if category[:-4] == '校园生活':
-        #     k = 2
-        # if len(rows) <= 5:
-        #     k = 1
-        # if len(rows) <= 15:
-        #     k = 1
+        print(category, k)
+        #k = find_best_k_value(rows, category)
         print('k:', k)
-        print(category)
         if k == 1:
             labels = [0] * len(data_set)
         else:
             labels = run_kmeans_by_scikit(k=k, vsm_name=category[:-4])
+            #labels = run_kmeans(k=k, vsm_name=category[:-4])
         save_k_cluster_to_redis(labels=labels, texts=rows, category=category[:-4])
         classify_k_cluster_from_category(labels=labels, texts=rows, vsm_name=category[:-4], category=category[:-4])
 
@@ -124,14 +125,14 @@ def run_second_cluster():
         if len(results) <= 30:
             k = 2
         else:
-            k = 3
+            k = 4
         vsm_name = category[:-4] + ':second'
         texts = run_build_vsm_by_texts(results, vsm_name=vsm_name)
         labels = run_kmeans_by_scikit(k=k, vsm_name=vsm_name)
         classify_k_cluster_to_redis(labels=labels, texts=texts, category=category[:-4], db=1)
 
 
-def run_hot_topic(db=1, hot_db=2):
+def run_hot_topic(db=1, hot_db=2, hot_type="first"):
     """ 获取各分类热点话题热度值.
 
     :return:
@@ -140,7 +141,11 @@ def run_hot_topic(db=1, hot_db=2):
 
     for category in categorys:
         topic = HotTopic(db=db, hot_db=hot_db)
-        topic.get_first_cluster_hot(category[:-4])
+        category = category[:-4]
+        if hot_type == 'first':
+            topic.get_first_cluster_hot(category)
+        else:
+            topic.get_second_cluster_hot(category)
 
 
 def run_first_cluster_hot_topic():
@@ -152,7 +157,24 @@ def run_first_cluster_hot_topic():
     run_hot_topic(db=0, hot_db=1)
 
 
+def run_second_cluster_hot_topic(db=1, hot_db=2):
+    """
+
+    :param db:
+    :param hot_db:
+    :return:
+    """
+    run_hot_topic(db=db, hot_db=hot_db, hot_type='second')
+
+
 def run_cluster(start, end, k=7):
+    """ 旧数据库数据全套热点话题流程， test.
+
+    :param start:
+    :param end:
+    :param k:
+    :return:
+    """
     #start = arrow.get(start, 'YYYY-MM-DD').date()
     #end = arrow.get(end, 'YYYY-MM-DD').date()
     end_time = arrow.get("2016-10-30")
@@ -192,6 +214,13 @@ def run_all_process(start_time, end_time):
 
 
 def run_new_all_process(start_time, end_time, k):
+    """ 新数据库热点话题发现流程. （一次聚类）
+
+    :param start_time:
+    :param end_time:
+    :param k:
+    :return:
+    """
     if isinstance(start_time, date):
         start = start_time
     else:
@@ -200,8 +229,6 @@ def run_new_all_process(start_time, end_time, k):
         end = end_time
     else:
         end = arrow.get(end_time, 'YYYY-MM-DD').date()
-    #start = arrow.get(start_time, 'YYYY-MM-DD').date()
-    #end = arrow.get(end_time, 'YYYY-MM-DD').date()
 
     rows = get_text_from_mysql('content', start_time=start, end_time=end)
 
@@ -223,7 +250,15 @@ def run_old_second_all_process(start_time, end_time):
     :return:
     """
     rows = read_text_old_mysql(end_time, days=30, database='weibo')
-    save_to_file('old_mysql', rows)
+    #save_to_file('old_mysql', rows)
+    run_classify_text(rows)
+    run_classify(corpus_path, seg_path, bag_path, test_bag_path, test_corpus_path, test_seg_path)
+    run_first_cluster('1', '1')
+    run_second_cluster()
+    #run_hot_topic(db=1, hot_db=2)
+    run_second_cluster_hot_topic(db=1, hot_db=2)
+    run_draw_chart(db=2)
+    run_draw_top_keyword_barh(db=2, draw_type='second')
 
 
 def run_old_all_process(end_time):
@@ -236,11 +271,11 @@ def run_old_all_process(end_time):
     save_to_file('old_mysql', rows)
 
     # 分类并进行正确归类
-    #run_classify_text(rows)
-    #run_classify(corpus_path, seg_path, bag_path, test_bag_path, test_corpus_path, test_seg_path)
+    run_classify_text(rows)
+    run_classify(corpus_path, seg_path, bag_path, test_bag_path, test_corpus_path, test_seg_path)
 
-    #run_first_cluster('1', '1')
-    #run_hot_topic(db=0, hot_db=1)
-    #run_draw_chart(db=1)
+    run_first_cluster('1', '1')
+    run_hot_topic(db=0, hot_db=1)
+    run_draw_chart(db=1)
     run_draw_top_keyword_barh(db=1)
 

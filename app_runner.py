@@ -30,6 +30,8 @@ from handle_text.sensitive import run_sensitive
 from classify_text.utils import read_text_old_mysql, save_to_file
 from utils import run_old_all_process, run_new_all_process
 from handle_text.hot_topic import list_hot_topic
+from utils import run_old_second_all_process
+from handle_text.draw_chart import run_draw_pie
 
 
 if __name__ == '__main__':
@@ -61,7 +63,7 @@ if __name__ == '__main__':
     #labels = run_min_kmeans(k=2, vsm_name='total')
 
     #  画图模块
-    #run_draw_pie(db=2)
+    run_draw_pie(db=2)
     #run_draw_chart(db=1)
     #run_draw_top_keyword_barh(db=2)
     #run_draw_cluster_chart(db=1)
@@ -72,8 +74,8 @@ if __name__ == '__main__':
 
     #   敏感词发现模块
     results = []
-    for row in texts:
-       results.append([row[0], row[1], row[2], row[3]])
+    for row in rows:
+        results.append([row[0], row[1], row[2], row[3].strip()])
     #run_sensitive(rows=results)
 
     #   一次及二次聚类模块
@@ -82,10 +84,12 @@ if __name__ == '__main__':
     start = '2018-03-01'
     end = '2018-04-29'
     end_time = arrow.get("2016-10-30")
+    #run_new_all_process(start, end, k=5)
     #run_old_all_process(end_time)
     #run_cluster(start, end, k=7)
-    #run_old_all_process(start, end, k=5)
-    list_hot_topic(db=1)
+    #run_old_all_process(end_time)
+    #list_hot_topic(db=1)
+    #run_old_second_all_process(start_time='1', end_time=end_time)
 
     #  热点话题热度值计算模块
     #run_hot_topic()
