@@ -182,6 +182,7 @@ optgroup {
 table {
   border-spacing: 0;
   border-collapse: collapse;
+  table-layout: fixed;
 }
 td,
 th {

@@ -130,7 +130,7 @@ def classify_k_cluster_from_category(labels, texts, vsm_name='total', filename='
                + like_num.encode('utf-8') + '\t'.encode('utf-8') + pub_time.encode('utf-8') + '\n'.encode('utf-8')
         vsm = vsm.decode('utf-8').encode('utf-8')
         with open(vsm_path, 'ab') as fp:
-            fp.write(text)
+            #fp.write(text)
             fp.write(vsm + '\n'.encode('utf-8'))
 
 

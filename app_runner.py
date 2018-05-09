@@ -63,7 +63,7 @@ if __name__ == '__main__':
     #labels = run_min_kmeans(k=2, vsm_name='total')
 
     #  画图模块
-    run_draw_pie(db=2)
+    #run_draw_pie(db=2)
     #run_draw_chart(db=1)
     #run_draw_top_keyword_barh(db=2)
     #run_draw_cluster_chart(db=1)
@@ -85,7 +85,7 @@ if __name__ == '__main__':
     end = '2018-04-29'
     end_time = arrow.get("2016-10-30")
     #run_new_all_process(start, end, k=5)
-    #run_old_all_process(end_time)
+    run_old_all_process(end_time)
     #run_cluster(start, end, k=7)
     #run_old_all_process(end_time)
     #list_hot_topic(db=1)

@@ -78,7 +78,7 @@ def run_first_cluster(start_time, end_time, k=1):
         data_set = numpy.mat(load_data_set(vsm_name=category[:-4]))
         k = find_optimal_k_value(data_set)
         print(category, k)
-        #k = find_best_k_value(rows, category)
+        k = find_best_k_value(rows, category)
         print('k:', k)
         if k == 1:
             labels = [0] * len(data_set)

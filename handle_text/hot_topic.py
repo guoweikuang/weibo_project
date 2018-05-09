@@ -242,7 +242,7 @@ def list_hot_topic(db=1):
             keywords = client.hgetall(keyword_name)
             keywords = sorted(keywords.items(), key=lambda d: d[1], reverse=True)
             words = [word.decode('utf-8') for word, value in keywords]
-            key_text = ' '.join(words[:7])
+            key_text = ' '.join(words[:8])
             sequence.append([key_name, key_text, value])
     return sequence
 

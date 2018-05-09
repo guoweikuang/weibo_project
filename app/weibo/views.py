@@ -95,7 +95,7 @@ def display():
     :return:
     """
     result = {}
-    keywords, img_name, rows, category = get_max_hot_keyword_chart(db=2)
+    keywords, img_name, rows, category = get_max_hot_keyword_chart(db=1)
     name = "images/%s/%s" % (category, img_name)
     results = sorted(keywords.items(), key=lambda d: d[1], reverse=True)[::-1]
     keywords = [key.decode('utf-8') for key, value in results]

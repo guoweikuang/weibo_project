@@ -57,13 +57,31 @@
 </form>
 
 </div>
+<br />
 
+
+<!--<div class="row masonry-container">-->
+    <!--{% for content in contents %}-->
+  <!--<div class="col-sm-6 col-md-4 item">-->
+      <!--<div class="thumbnail">-->
+      <!--<div class="caption">-->
+        <!--<p>{{ content[0] }}</p>-->
+        <!--<p><a href="#" class="btn btn-primary" role="button">评论{{ content[1] }}</a>-->
+            <!--<a href="#" class="btn btn-default" role="button">点赞{{ content[2] }}</a>-->
+        <!--</p>-->
+      <!--</div>-->
+
+      <!--</div>-->
+    <!--</div>-->
+
+    <!--{% endfor %}-->
+<!--</div>-->
 <div class="container">
-    <table class="table table-hover table-striped table-condensed">
+  		<table class=" table table-hover">
   			<thead>
-     			<th class="active">ID</th>
+  				<th class="active">ID</th>
   				<th class="active">微博内容</th>
-  				<th class="active">评论个数</th>
+  				<th class="active">评论数</th>
   				<th class="active">点赞数</th>
   				<th class="active">创建时间</th>
   			</thead>
@@ -71,26 +89,47 @@
             <tbody>
 
                 {% for content in contents %}
-                <!--
-                <tr>
-                    <td>{{ loop.index }}</td>
-                    <td>{{ content[0] }}</td>
-                    <td>{{ content[1] }}</td>
-                    <td>{{ content[2] }}</td>
-                    <td>{{ content[3] }}</td>
-                </tr>
-                -->
-
-                <td class="info">{{ loop.index }}</td>
+            <tr>
+                <td class="active">{{ loop.index }}</td>
             	  <td class="success">{{ content[0] }}</td>
 				  <td class="warning">{{ content[1] }}</td>
 				  <td class="danger">{{ content[2] }}</td>
-                  <td class="info">{{ content[3]}}</td>
-                </tr>
+                <td class="info">{{ content[3]}}</td>
+            </tr>
             </tbody>
                 {% endfor %}
 
-    </table>
+        </table>
 </div>
 
+
+<script>
+(function( $ ) {
+
+    var $container = $('.masonry-container');
+    $container.imagesLoaded( function () {
+        $container.masonry({
+            columnWidth: '.item',
+            itemSelector: '.item'
+        });
+    });
+
+    //Reinitialize masonry inside each panel after the relative tab link is clicked -
+    $('a[data-toggle=tab]').each(function () {
+        var $this = $(this);
+
+        $this.on('shown.bs.tab', function () {
+
+            $container.imagesLoaded( function () {
+                $container.masonry({
+                    columnWidth: '.item',
+                    itemSelector: '.item'
+                });
+            });
+
+        }); //end shown
+    });  //end each
+
+})(jQuery);
+</script>
 {% endblock %}

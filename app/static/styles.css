@@ -212,3 +212,41 @@ h2:hover > a.anchor {
 
 
 
+.product-container {
+      width: 260px;
+      margin: 0 auto;
+      border-radius: 10px;
+      background: #f6f8f7;
+
+      .name {
+        border-bottom: 1px solid @gray-light;
+        font-size: 20px;
+        padding: 2px;
+      }
+      .interest {
+        color: #1da427;
+        font-size: 70px;
+        font-weight: bold;
+        padding: 0px;
+        margin-bottom: -30px;
+
+        .percent {
+          font-size: 31px;
+        }
+      }
+      .intro {
+        padding: 5px;
+      }
+      .strong {
+        padding: 3px;
+        font-size: 17px;
+        color: @white;
+        background: #326c84;
+        border-radius: 0 0 10px 10px;
+      }
+}
+
+
+/*.table {*/
+    /*table-layout: fixed;*/
+}
