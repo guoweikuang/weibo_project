@@ -5,6 +5,7 @@ models module
 
 @author guoweikuang
 """
+from datetime import datetime
 from . import db
 from . import login_manager
 
@@ -65,6 +66,27 @@ class User(db.Model, UserMixin):
             return False
         else:
             return True
+
+
+class Content(db.Model, UserMixin):
+    __tablename__ = 'content'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255))
+    pub_time = db.Column(db.String(255))
+    comment_num = db.Column(db.Integer)
+    like_num = db.Column(db.Integer)
+    url = db.Column(db.String(255))
+
+
+class opinion(db.Model, UserMixin):
+    __tablename__ = 'opinion'
+    id = db.Column(db.Integer, primary_key=True)
+    event_type = db.Column(db.String(255))
+    sen_word = db.Column(db.String(255))
+    weibo_text = db.Column(db.String(255))
+    pub_time = db.Column(db.DateTime, default=datetime.utcnow())
+    comment = db.Column(db.String(255))
+    like_num = db.Column(db.Integer)
 
 
 class AnonymousUser(AnonymousUserMixin):
