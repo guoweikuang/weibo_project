@@ -65,7 +65,6 @@ class KMeans(object):
         :param vector2:
         :return: 欧式距离
         """
-        # return abs(vector1, vector2).max()
         distance = numpy.sqrt(numpy.sum(numpy.power(vector1 - vector2, 2)))
         return distance
 

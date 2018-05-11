@@ -25,6 +25,10 @@ from .utils import get_categorys
 matplotlib.matplotlib_fname()
 plt.rcParams['font.sans-serif'] = ['YaHei Consolas Hybrid']
 plt.rcParams['axes.unicode_minus'] = False
+font = {'family' : 'YaHei Consolas Hybrid',
+ 'weight' : 'bold',
+ 'size' : 15}
+matplotlib.rc('font', **font)
 
 
 class DrawChart(object):
@@ -153,7 +157,7 @@ class DrawChart(object):
         plt.savefig(os.path.join(picture_path, '%s.png' % category))
 
     def draw_pie(self):
-        plt.figure(figsize=(9, 6))
+        plt.figure(figsize=(10, 5))
         labels = ["社会突发事件", '校园安全', '心理健康']
         percents = {}
         for label in labels:
@@ -162,7 +166,7 @@ class DrawChart(object):
         results = {}
         for key, value in percents.items():
             results[key] = round(value / float(total) * 100, 2)
-        colors = ['red', 'yellowgreen', 'lightskyblue']
+        colors = ['#7FFFD4', 'yellowgreen', 'lightskyblue']
         labels = []
         scores = []
         for key, value in results.items():
@@ -180,6 +184,7 @@ class DrawChart(object):
         # 设置x，y轴刻度一致，这样饼图才能是圆的
         plt.axis('equal')
         plt.legend()
+        remove_or_create_pic_path('sensitive')
         picture_path = get_picture_path('sensitive')
         plt.savefig(os.path.join(picture_path, 'sensitive.png'))
         plt.show()

@@ -32,12 +32,13 @@ from utils import run_old_all_process, run_new_all_process
 from handle_text.hot_topic import list_hot_topic
 from utils import run_old_second_all_process
 from handle_text.draw_chart import run_draw_pie
+from handle_text.draw_chart import run_draw_chart
 
 
 if __name__ == '__main__':
 
     # 登录模块
-    #run_login_weibo(username='15602200534', password='guoweikuang2018')
+    #run_login_weibo(username='18902304731', password='')
 
     #   异步爬取模块
     #run_crawl_by_multiprocess(1, 20, 4)
@@ -63,7 +64,7 @@ if __name__ == '__main__':
     #labels = run_min_kmeans(k=2, vsm_name='total')
 
     #  画图模块
-    #run_draw_pie(db=2)
+    run_draw_pie(db=2)
     #run_draw_chart(db=1)
     #run_draw_top_keyword_barh(db=2)
     #run_draw_cluster_chart(db=1)
@@ -85,7 +86,7 @@ if __name__ == '__main__':
     end = '2018-04-29'
     end_time = arrow.get("2016-10-30")
     #run_new_all_process(start, end, k=5)
-    run_old_all_process(end_time)
+    #run_old_all_process(end_time)
     #run_cluster(start, end, k=7)
     #run_old_all_process(end_time)
     #list_hot_topic(db=1)
