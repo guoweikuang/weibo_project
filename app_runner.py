@@ -42,7 +42,7 @@ if __name__ == '__main__':
 
     #   异步爬取模块
     #run_crawl_by_multiprocess(1, 20, 4)
-    #run_async_crawl(1, 10)
+    run_async_crawl(1, 10)
 
     #  读取数据并构建向量空间模型
     now = arrow.utcnow().date()
@@ -64,7 +64,7 @@ if __name__ == '__main__':
     #labels = run_min_kmeans(k=2, vsm_name='total')
 
     #  画图模块
-    run_draw_pie(db=2)
+    #run_draw_pie(db=2)
     #run_draw_chart(db=1)
     #run_draw_top_keyword_barh(db=2)
     #run_draw_cluster_chart(db=1)

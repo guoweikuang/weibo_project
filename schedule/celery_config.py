@@ -20,14 +20,19 @@ CELERYBEAT_SCHEDULE = {
     "crawl": {
         'task': "schedule.tasks.schedule_async_crawl",
         "schedule": timedelta(hours=5),
-        "args": (1, 20),
-    }
-}
-
-
-CELERYBEAT_SCHEDULE = {
+        "args": (1, 10),
+    },
     "sensitive": {
         "task": "schedule.tasks.schedule_get_sensitive",
-        "schedule": timedelta(hours=2),
+        "schedule": timedelta(hours=5),
     }
+
 }
+
+
+# CELERYBEAT_SCHEDULE = {
+#     "sensitive": {
+#         "task": "schedule.tasks.schedule_get_sensitive",
+#         "schedule": timedelta(hours=2),
+#     }
+# }
